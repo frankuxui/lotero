@@ -17,7 +17,7 @@ export function FilterBar({ children }: { children: ReactNode }) {
               Filtros
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom">
+          <SheetContent open={open} side="bottom">
             <SheetHeader>
               <SheetTitle>Filtros</SheetTitle>
             </SheetHeader>

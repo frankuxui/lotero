@@ -15,7 +15,7 @@ export function DrawCard({ draw, gameLabel, extrasConfig, to, actions }: { draw:
     <>
       <div className="flex items-center justify-between gap-2">
         <GameBadge game={draw.game} label={gameLabel} />
-        <span className="text-sm text-slate-500 dark:text-slate-400">{formatPlainDate(draw.drawDate, dateFormat)}</span>
+        <span className="text-sm">{formatPlainDate(draw.drawDate, dateFormat)}</span>
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-1.5">
         {draw.numbers.map((n) => (
@@ -25,8 +25,8 @@ export function DrawCard({ draw, gameLabel, extrasConfig, to, actions }: { draw:
           const raw = draw.extras[extra.key];
           if (raw === undefined || raw === null || raw === "") return null;
           return (
-            <span key={extra.key} className="ml-1 flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-              <span className="font-medium">{extra.label}:</span>
+            <span key={extra.key} className="ml-1 flex items-center gap-1 text-xs ">
+              <span className="font-medium">{extra.label.charAt(0).toUpperCase()}:</span>
               {typeof raw === "number" ? <NumberBadge value={raw} size="sm" variant="extra" /> : <span>{String(raw)}</span>}
             </span>
           );

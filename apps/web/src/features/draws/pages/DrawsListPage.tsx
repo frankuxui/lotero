@@ -43,7 +43,7 @@ export default function DrawsListPage() {
     dateFrom: dateFrom || undefined,
     dateTo: dateTo || undefined,
     limit: TABLE_FETCH_LIMIT,
-    offset: 0,
+    offset: 0
   });
   const deleteMutation = useDeleteDraw();
 
@@ -65,7 +65,7 @@ export default function DrawsListPage() {
         toast({ title: "Sorteo eliminado", variant: "success" });
         setPendingDelete(null);
       },
-      onError: () => toast({ title: "No se pudo eliminar el sorteo", variant: "error" }),
+      onError: () => toast({ title: "No se pudo eliminar el sorteo", variant: "error" })
     });
   };
 
@@ -97,44 +97,21 @@ export default function DrawsListPage() {
       <FilterBar>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="draws-filter-game">Juego</Label>
-          <GameSelector
-            id="draws-filter-game"
-            games={games}
-            value={game}
-            onChange={(value) => setParam("game", value)}
-            allowAll
-            className="w-48"
-          />
+          <GameSelector id="draws-filter-game" games={games} value={game} onChange={(value) => setParam("game", value)} allowAll className="w-48" />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="draws-filter-from">Desde</Label>
-          <Input
-            id="draws-filter-from"
-            type="date"
-            value={dateFrom}
-            max={dateTo || undefined}
-            onChange={(event) => setParam("dateFrom", event.target.value)}
-            className="w-40"
-          />
+          <Input id="draws-filter-from" type="date" value={dateFrom} max={dateTo || undefined} onChange={(event) => setParam("dateFrom", event.target.value)} className="w-40" />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="draws-filter-to">Hasta</Label>
-          <Input
-            id="draws-filter-to"
-            type="date"
-            value={dateTo}
-            min={dateFrom || undefined}
-            onChange={(event) => setParam("dateTo", event.target.value)}
-            className="w-40"
-          />
+          <Input id="draws-filter-to" type="date" value={dateTo} min={dateFrom || undefined} onChange={(event) => setParam("dateTo", event.target.value)} className="w-40" />
         </div>
       </FilterBar>
 
       {drawsQuery.isPending && <SkeletonCard count={itemsPerPage} />}
 
-      {drawsQuery.isError && (
-        <ErrorState message="No se pudieron cargar los sorteos." onRetry={() => void drawsQuery.refetch()} />
-      )}
+      {drawsQuery.isError && <ErrorState message="No se pudieron cargar los sorteos." onRetry={() => void drawsQuery.refetch()} />}
 
       {drawsQuery.data && drawsQuery.data.items.length === 0 && (
         <EmptyState
@@ -152,12 +129,7 @@ export default function DrawsListPage() {
         <>
           {!showCardsOnly && (
             <div className="hidden md:block">
-              <DrawsTable
-                draws={drawsQuery.data.items}
-                games={games}
-                dateFormat={dateFormat}
-                onDeleteRequest={requestDelete}
-              />
+              <DrawsTable draws={drawsQuery.data.items} games={games} dateFormat={dateFormat} onDeleteRequest={requestDelete} />
             </div>
           )}
 

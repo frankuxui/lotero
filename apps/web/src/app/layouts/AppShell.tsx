@@ -11,12 +11,10 @@ export function AppShell() {
   return (
     <div className="flex min-h-dvh">
       <DesktopSidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col lg:pl-64">
         <MobileTopBar />
-        <main className="flex-1 px-4 py-6 pb-24 sm:px-6 md:pb-6 lg:px-8">
-          <div className="mx-auto w-full max-w-6xl">
-            <Outlet />
-          </div>
+        <main className="flex-1 px-8 py-6 pb-24 sm:px-6 lg:px-8 lg:pb-6">
+          <Outlet />
         </main>
       </div>
       <MobileBottomNavigation />

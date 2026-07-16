@@ -26,7 +26,7 @@ function SidebarLink({ item }: { item: NavItem }) {
 
 export function DesktopSidebar() {
   return (
-    <aside className="hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-white md:flex dark:border-slate-800 dark:bg-slate-900">
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-white lg:flex dark:border-slate-800 dark:bg-slate-900">
       <div className="flex h-16 items-center gap-2 px-6">
         <Dices className="size-6 text-indigo-600" aria-hidden="true" />
         <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">Lotero</span>
