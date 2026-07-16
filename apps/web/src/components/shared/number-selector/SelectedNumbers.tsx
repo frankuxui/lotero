@@ -16,7 +16,7 @@ export function SelectedNumbers({
       ) : (
         [...value]
           .sort((a, b) => a - b)
-          .map((n) => <NumberBadge key={n} value={n} variant="match" />)
+          .map((n, i) => <NumberBadge key={i} value={n} variant="match" />)
       )}
       {count !== undefined && (
         <span className="ml-auto shrink-0 text-xs font-medium text-slate-500 dark:text-slate-400">

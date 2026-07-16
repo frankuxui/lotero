@@ -114,7 +114,7 @@ export default function DashboardPage() {
               }
             />
             {dashboardQuery.data.recentBets.length === 0 ? (
-              <EmptyState title="Todavía no has registrado apuestas" />
+              <EmptyState title="Todavía no has registrado apuestas" description="Las apuestas que realices aparecerán aquí al registrarlas." />
             ) : (
               <div className="grid gap-3 sm:grid-cols-2">
                 {dashboardQuery.data.recentBets.map((bet) => (
