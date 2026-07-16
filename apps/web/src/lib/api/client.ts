@@ -2,6 +2,20 @@ import type { ApiFailure, ApiSuccess, ApiSuccessPaged, Paginated, ZodIssueLike }
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+if (import.meta.env.DEV) {
+  if (API_URL) {
+    // Ayuda a diagnosticar el caso "funciona en localhost pero no por IP LAN":
+    // confirma en la consola qué URL de API quedó realmente embebida en este build.
+    console.info(`[api] VITE_API_URL = ${API_URL}`);
+  } else {
+    console.warn(
+      "[api] VITE_API_URL no está definida. Revisa apps/web/.env y reinicia `npm run dev` " +
+        "(Vite solo lee .env al arrancar, no cuando lo editas). Sin esta variable, las " +
+        "peticiones se construyen con una URL relativa rota y fallan en silencio.",
+    );
+  }
+}
+
 export class ApiError extends Error {
   readonly status: number;
   readonly details?: ZodIssueLike[] | unknown;
@@ -27,6 +41,24 @@ export class ApiError extends Error {
 
 export type QueryParamValue = string | number | boolean | undefined | null;
 
+/**
+ * Sin VITE_API_URL, `${API_URL}${path}` deja de ser una URL absoluta y pasa a ser una ruta
+ * relativa a la página actual (p. ej. "undefined/api/draws"). El navegador la resuelve contra
+ * el propio origen del frontend en vez de contra la API, así que el fetch "funciona" pero
+ * nunca llega al backend: la UI recibe un 404/HTML del propio Vite en vez de datos, y sin este
+ * chequeo el fallo es silencioso hasta que se lee la consola. Fallar aquí lo convierte en un
+ * error visible e inmediato en la UI (vía ErrorState), en vez de una lista vacía sin explicación.
+ */
+function resolveApiUrl(path: string): string {
+  if (!API_URL) {
+    throw new ApiError(
+      0,
+      "La app no tiene configurada la URL de la API (VITE_API_URL). Revisa apps/web/.env y reinicia el servidor de desarrollo.",
+    );
+  }
+  return `${API_URL}${path}`;
+}
+
 function buildQueryString(params?: Record<string, QueryParamValue>): string {
   if (!params) return "";
   const search = new URLSearchParams();
@@ -47,7 +79,7 @@ interface RequestOptions {
 
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { method = "GET", params, body, signal } = options;
-  const url = `${API_URL}${path}${buildQueryString(params)}`;
+  const url = `${resolveApiUrl(path)}${buildQueryString(params)}`;
 
   const response = await fetch(url, {
     method,
@@ -81,7 +113,7 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
 
 async function requestPaged<T>(path: string, options: RequestOptions = {}): Promise<Paginated<T>> {
   const { method = "GET", params, body, signal } = options;
-  const url = `${API_URL}${path}${buildQueryString(params)}`;
+  const url = `${resolveApiUrl(path)}${buildQueryString(params)}`;
 
   const response = await fetch(url, {
     method,

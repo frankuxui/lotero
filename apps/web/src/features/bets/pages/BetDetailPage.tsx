@@ -59,6 +59,7 @@ export default function BetDetailPage() {
     deleteMutation.mutate(bet.id, {
       onSuccess: () => {
         toast({ title: "Apuesta eliminada", variant: "success" });
+        setConfirmOpen(false);
         navigate("/bets");
       },
       onError: () => toast({ title: "No se pudo eliminar la apuesta", variant: "error" }),
