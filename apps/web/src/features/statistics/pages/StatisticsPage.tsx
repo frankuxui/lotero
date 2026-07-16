@@ -70,20 +70,20 @@ export default function StatisticsPage() {
 
   return (
     <>
-      <PageHeader title="Estadísticas" description="Frecuencias, calientes/fríos y patrones de los sorteos." />
+      <PageHeader title="Estadísticas" description="Frecuencias, calientes/fríos y patrones más comunes de los sorteos." />
 
       <FilterBar>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="stats-game">Juego</Label>
-          <GameSelector id="stats-game" games={games} value={game} onChange={setGameOverride} className="w-48" />
+          <GameSelector id="stats-game" games={games} value={game} onChange={setGameOverride} />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="stats-from">Desde</Label>
-          <Input id="stats-from" type="date" value={dateFrom} max={dateTo || undefined} onChange={(event) => setParam("dateFrom", event.target.value)} className="w-40" />
+          <Input id="stats-from" type="date" value={dateFrom} max={dateTo || undefined} onChange={(event) => setParam("dateFrom", event.target.value)} />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="stats-to">Hasta</Label>
-          <Input id="stats-to" type="date" value={dateTo} min={dateFrom || undefined} onChange={(event) => setParam("dateTo", event.target.value)} className="w-40" />
+          <Input id="stats-to" type="date" value={dateTo} min={dateFrom || undefined} onChange={(event) => setParam("dateTo", event.target.value)} />
         </div>
       </FilterBar>
 
@@ -96,26 +96,26 @@ export default function StatisticsPage() {
       {data && data.totalDraws > 0 && (
         <div className="flex flex-col gap-8">
           <div className="grid grid-cols-2 gap-3 xl:grid-cols-12">
-            <StatisticCard className="xl:col-span-3" label="Sorteos analizados" value={data.totalDraws} />
-            <StatisticCard className="xl:col-span-2" label="Suma media" value={data.averageSum} />
-            <StatisticCard className="xl:col-span-3" label="Con consecutivos" value={`${data.consecutive.percentage}%`} description={`${data.consecutive.drawsWithConsecutive} sorteos`} />
+            <StatisticCard className="col-span-1 xl:col-span-3" label="Sorteos analizados" value={data.totalDraws} />
+            <StatisticCard className="col-span-1 xl:col-span-2" label="Suma media" value={data.averageSum} />
+            <StatisticCard className="col-span-2 xl:col-span-3" label="Con consecutivos" value={`${data.consecutive.percentage}%`} description={`${data.consecutive.drawsWithConsecutive} sorteos`} />
             <StatisticCard
-              className="xl:col-span-4"
+              className="col-span-2 xl:col-span-4"
               label="Rango"
               value={
-                <div className="flex w-full items-center justify-between gap-4">
-                  <div className="flex items-center gap-2">
-                    <span className="size-9 rounded-full inline-flex items-center justify-center flex-none bg-foreground/10">
-                      <CalendarDays className="size-4" strokeWidth="1.5" />
+                <div className="flex w-full items-center justify-between gap-4 mt-3">
+                  <div className="flex items-center gap-4">
+                    <span className="size-11 rounded-full inline-flex items-center justify-center flex-none bg-foreground/10">
+                      <CalendarDays className="size-5" strokeWidth="1.5" />
                     </span>
                     <div className="flex flex-col gap-0.5">
                       <span className="text-xs text-foreground/80">Desde</span>
                       <span className="text-xs font-semibold text-foreground/80">{formatPlainDate(data.dateRange.from ?? "", dateFormat)}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="size-9 rounded-full inline-flex items-center justify-center flex-none bg-foreground/10">
-                      <CalendarDays className="size-4" strokeWidth="1.5" />
+                  <div className="flex items-center gap-4">
+                    <span className="size-11 rounded-full inline-flex items-center justify-center flex-none bg-foreground/10">
+                      <CalendarDays className="size-5" strokeWidth="1.5" />
                     </span>
                     <div className="flex flex-col gap-0.5">
                       <span className="text-xs text-foreground/80">Hasta</span>

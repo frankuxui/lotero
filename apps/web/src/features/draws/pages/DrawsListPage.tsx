@@ -97,15 +97,15 @@ export default function DrawsListPage() {
       <FilterBar>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="draws-filter-game">Juego</Label>
-          <GameSelector id="draws-filter-game" games={games} value={game} onChange={(value) => setParam("game", value)} allowAll className="w-48" />
+          <GameSelector id="draws-filter-game" games={games} value={game} onChange={(value) => setParam("game", value)} allowAll />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="draws-filter-from">Desde</Label>
-          <Input id="draws-filter-from" type="date" value={dateFrom} max={dateTo || undefined} onChange={(event) => setParam("dateFrom", event.target.value)} className="w-40" />
+          <Input id="draws-filter-from" type="date" value={dateFrom} max={dateTo || undefined} onChange={(event) => setParam("dateFrom", event.target.value)} />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="draws-filter-to">Hasta</Label>
-          <Input id="draws-filter-to" type="date" value={dateTo} min={dateFrom || undefined} onChange={(event) => setParam("dateTo", event.target.value)} className="w-40" />
+          <Input id="draws-filter-to" type="date" value={dateTo} min={dateFrom || undefined} onChange={(event) => setParam("dateTo", event.target.value)} />
         </div>
       </FilterBar>
 

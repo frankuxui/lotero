@@ -27,12 +27,11 @@ export default function DrawFormPage() {
 
   const [gameOverride, setGameOverride] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<ApiError | null>(null);
+  const [resetKey, setResetKey] = useState(0);
 
   const games = useMemo(() => gamesQuery.data ?? [], [gamesQuery.data]);
 
-  const initialGame = isEdit
-    ? drawQuery.data?.game
-    : (defaultGameSetting && findGameConfig(games, defaultGameSetting) ? defaultGameSetting : games[0]?.id);
+  const initialGame = isEdit ? drawQuery.data?.game : defaultGameSetting && findGameConfig(games, defaultGameSetting) ? defaultGameSetting : games[0]?.id;
   const selectedGame = gameOverride ?? initialGame;
 
   const isPending = gamesQuery.isPending || (isEdit && drawQuery.isPending);
@@ -44,7 +43,7 @@ export default function DrawFormPage() {
     return {
       drawDate: drawQuery.data.drawDate,
       numbers: drawQuery.data.numbers,
-      extras: drawQuery.data.extras,
+      extras: drawQuery.data.extras
     };
   }, [isEdit, drawQuery.data, config]);
 
@@ -77,8 +76,13 @@ export default function DrawFormPage() {
   const handleSubmit = (payload: { drawDate: string; numbers: number[]; extras: Record<string, unknown> }) => {
     setSubmitError(null);
     const onSuccess = (draw: { id: string }) => {
-      toast({ title: isEdit ? "Sorteo actualizado" : "Sorteo creado", variant: "success" });
-      navigate(`/draws/${draw.id}`);
+      if (isEdit) {
+        toast({ title: "Sorteo actualizado", variant: "success" });
+        navigate(`/draws/${draw.id}`);
+        return;
+      }
+      toast({ title: "Sorteo creado", variant: "success" });
+      setResetKey((key) => key + 1);
     };
     const onError = (error: unknown) => {
       if (error instanceof ApiError) setSubmitError(error);
@@ -99,7 +103,7 @@ export default function DrawFormPage() {
         <GameSelector id="draw-game" games={games} value={config.id} onChange={setGameOverride} />
       </div>
       <DrawForm
-        key={config.id}
+        key={`${config.id}-${resetKey}`}
         config={config}
         defaultValues={defaultValues}
         onSubmit={handleSubmit}

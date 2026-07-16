@@ -64,7 +64,7 @@ export default function DrawDetailPage() {
         setConfirmOpen(false);
         navigate("/draws");
       },
-      onError: () => toast({ title: "No se pudo eliminar el sorteo", variant: "error" }),
+      onError: () => toast({ title: "No se pudo eliminar el sorteo", variant: "error" })
     });
   };
 
@@ -82,29 +82,29 @@ export default function DrawDetailPage() {
         title={`Sorteo ${formatPlainDate(draw.drawDate, dateFormat)}`}
         breadcrumbs={breadcrumbs}
         actions={
-          <>
-            <Button asChild variant="outline" size="sm">
+          <div className="w-full flex items-center justify-between gap-2">
+            <Button asChild variant="outline" size="default" className="flex-1">
               <Link to={compareHref}>
                 <GitCompare aria-hidden="true" />
                 Comparar
               </Link>
             </Button>
-            <Button asChild variant="outline" size="sm">
+            <Button asChild variant="outline" size="default" className="flex-1">
               <Link to={`/draws/${draw.id}/edit`}>
                 <Pencil aria-hidden="true" />
                 Editar
               </Link>
             </Button>
-            <Button variant="destructive" size="sm" onClick={requestDelete}>
+            <Button variant="destructive" size="default" className="flex-1" onClick={requestDelete}>
               <Trash2 aria-hidden="true" />
               Eliminar
             </Button>
-          </>
+          </div>
         }
       />
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <GameBadge game={draw.game} label={gameLabel(games, draw.game)} />
+        <GameBadge game={draw.game} label={gameLabel(games, draw.game)} className="px-4 py-1.5" />
         <span className="text-sm text-slate-500 dark:text-slate-400">Creado el {formatTimestamp(draw.createdAt)}</span>
         <span className="text-sm text-slate-500 dark:text-slate-400">Actualizado el {formatTimestamp(draw.updatedAt)}</span>
       </div>
@@ -123,12 +123,8 @@ export default function DrawDetailPage() {
                 if (raw === undefined || raw === null || raw === "") return null;
                 return (
                   <div key={extra.key} className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{extra.label}:</span>
-                    {typeof raw === "number" ? (
-                      <NumberBadge value={raw} variant="extra" />
-                    ) : (
-                      <span className="text-sm text-slate-700 dark:text-slate-200">{String(raw)}</span>
-                    )}
+                    <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{extra.label.charAt(0).toUpperCase()}:</span>
+                    {typeof raw === "number" ? <NumberBadge value={raw} variant="extra" /> : <span className="text-sm text-slate-700 dark:text-slate-200">{String(raw)}</span>}
                   </div>
                 );
               })}

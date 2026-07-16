@@ -21,6 +21,14 @@ npm run dev
 
 Revisa las URLs de los dos `.env`: los ejemplos usan el puerto `4031` y contemplan acceso desde la red local.
 
+Para dejar la API siempre visible en la red local (móvil, otros equipos) mientras el frontend sigue en modo desarrollo:
+
+```bash
+docker compose up -d --build api
+```
+
+Reutiliza `apps/api/data/lotero.db` vía volumen; no crea una base separada. Detalle completo en [operaciones](docs/operations.md#despliegue).
+
 ## Comandos
 
 | Comando | Propósito |

@@ -209,7 +209,7 @@ export function MobileSheet({ open, onOpenChange, title = "Panel", children }: M
               <Close ref={closeButtonRef} onClick={() => void handleClose()} aria-label="Cerrar panel" />
             </div>
 
-            <div className="overflow-y-auto p-10">{children}</div>
+            <div className="overflow-y-auto pt-2 px-10">{children}</div>
           </motion.div>
         </motion.div>
       ) : null}

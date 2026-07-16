@@ -57,7 +57,26 @@ No edites manualmente archivos de `migrations/meta` ni una migración ya aplicad
 
 ## Despliegue
 
-No existe Dockerfile, adaptador serverless, infraestructura, workflow de release ni destino de despliegue definido. El build genera `apps/web/dist` y `apps/api/dist`; `npm start -w apps/api` ejecuta la API compilada. No documentes un procedimiento de producción hasta elegir hosting, almacenamiento persistente, TLS, secretos, backups y política de acceso.
+La API se ejecuta en Docker para permanecer visible en la red local (móvil, portátiles); el frontend sigue en modo desarrollo (`npm run dev:web`) y no se dockeriza.
+
+```bash
+docker compose up -d --build api
+docker compose logs -f api
+docker compose down
+```
+
+`apps/api/Dockerfile` compila el workspace `@lotero/api` en dos etapas y ejecuta `docker-compose.yml` (raíz) con contexto en la raíz del monorepo. El contenedor requiere `apps/api/.env` (mismo archivo que usas en desarrollo); `docker-compose.yml` fija `HOST`, `PORT`, `NODE_ENV` y `DATABASE_URL`, y toma el resto (`CORS_ORIGIN`, `LOG_LEVEL`) de ese `.env`.
+
+**Una sola base de datos:** el volumen `./apps/api/data:/app/apps/api/data` monta el mismo directorio que usa el proceso en desarrollo, así que Docker lee y escribe el mismo archivo `lotero.db`; no se crea una base separada y no se pierden los datos existentes. El contenedor aplica migraciones en cada arranque (`node dist/db/migrate.js`, idempotente) pero nunca ejecuta el seed.
+
+No corras `npm run dev:api` y el contenedor al mismo tiempo: ambos abrirían el mismo archivo SQLite como escritores concurrentes. Elige uno u otro.
+
+Para que el acceso LAN (móvil, portátiles) funcione de forma consistente:
+
+- **Firewall de Windows:** si otro dispositivo no conecta a `http://<IP-LAN>:4031`, confirma que el Firewall permite conexiones entrantes al puerto 4031 (Docker Desktop suele pedir el permiso la primera vez).
+- **Arranque tras reiniciar el equipo:** `restart: unless-stopped` reinicia el contenedor si Docker Desktop se reinicia o crashea, pero no si apagas el PC. Para que la API vuelva a estar disponible sin intervención manual, configura Docker Desktop para iniciar con Windows.
+
+No existe adaptador serverless, infraestructura remota, workflow de release ni destino fuera de la red local. No documentes un procedimiento de producción remota hasta elegir hosting externo, TLS, secretos, backups y política de acceso.
 
 ## Diagnóstico
 
