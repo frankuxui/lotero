@@ -1,0 +1,16 @@
+# Dependencies
+node_modules
+
+# Editor / OS
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# Claude Code local (personal) settings — launch.json stays tracked
+.claude/settings.local.json
