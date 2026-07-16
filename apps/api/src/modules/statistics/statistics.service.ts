@@ -4,6 +4,7 @@ import type { DrawRepository } from "../draws/draw.repository.js";
 import { parseStatisticsQuery } from "./statistics.schemas.js";
 import type {
   DecadeBucket,
+  ExtraFrequency,
   NumberDelay,
   NumberFrequency,
   NumberPair,
@@ -110,6 +111,25 @@ export function computeStatistics(config: GameConfig, draws: Draw[]): Statistics
     .sort((a, b) => b.count - a.count)
     .slice(0, TOP_LIST_SIZE);
 
+  const extraFrequencies: ExtraFrequency[] = config.extras.map((extraConfig) => {
+    const counts = new Map<string, number>();
+    for (const draw of draws) {
+      const raw = draw.extras[extraConfig.key];
+      if (raw === undefined || raw === null || raw === "") continue;
+      const key = String(raw);
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    const top = Array.from(counts.entries())
+      .map(([key, count]) => ({
+        value: extraConfig.type === "number" ? Number(key) : key,
+        count,
+        percentage: totalDraws > 0 ? Math.round((count / totalDraws) * 1000) / 10 : 0,
+      }))
+      .sort((a, b) => b.count - a.count || String(a.value).localeCompare(String(b.value)))
+      .slice(0, TOP_LIST_SIZE);
+    return { key: extraConfig.key, label: extraConfig.label, type: extraConfig.type, top };
+  });
+
   return {
     game: config.id,
     totalDraws,
@@ -130,6 +150,7 @@ export function computeStatistics(config: GameConfig, draws: Draw[]): Statistics
       drawsWithConsecutive,
       percentage: totalDraws > 0 ? Math.round((drawsWithConsecutive / totalDraws) * 1000) / 10 : 0,
     },
+    extraFrequencies,
   };
 }
 
