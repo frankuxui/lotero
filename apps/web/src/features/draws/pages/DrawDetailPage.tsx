@@ -61,6 +61,7 @@ export default function DrawDetailPage() {
     deleteMutation.mutate(draw.id, {
       onSuccess: () => {
         toast({ title: "Sorteo eliminado", variant: "success" });
+        setConfirmOpen(false);
         navigate("/draws");
       },
       onError: () => toast({ title: "No se pudo eliminar el sorteo", variant: "error" }),
