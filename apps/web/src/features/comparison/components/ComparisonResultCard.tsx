@@ -6,15 +6,7 @@ import { formatPlainDate } from "@/lib/formatters/date";
 import { useSettingsStore } from "@/store/settingsStore";
 import type { ComparisonResult } from "@/types/comparison";
 
-export function ComparisonResultCard({
-  result,
-  gameLabel,
-  to,
-}: {
-  result: ComparisonResult;
-  gameLabel?: string;
-  to?: string;
-}) {
+export function ComparisonResultCard({ result, gameLabel, to }: { result: ComparisonResult; gameLabel?: string; to?: string }) {
   const dateFormat = useSettingsStore((state) => state.dateFormat);
   const matchSet = new Set(result.matches);
   const total = result.matches.length + result.nonMatches.length;
@@ -23,9 +15,7 @@ export function ComparisonResultCard({
     <>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">
-            #{result.ranking}
-          </span>
+          <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">#{result.ranking}</span>
           <GameBadge game={result.game} label={gameLabel} />
           <span className="text-xs text-slate-500 dark:text-slate-400">
             {result.recordType === "draw" ? "Sorteo" : "Apuesta"} · {formatPlainDate(result.date, dateFormat)}
@@ -51,10 +41,7 @@ export function ComparisonResultCard({
     <Card>
       <CardContent className="pt-4">
         {to ? (
-          <Link
-            to={to}
-            className="block rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
-          >
+          <Link to={to} className="block rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600">
             {content}
           </Link>
         ) : (

@@ -76,14 +76,7 @@ export default function NumberDetailPage() {
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="number-jump">Ir a otro número</Label>
           <div className="flex gap-2">
-            <Input
-              id="number-jump"
-              type="number"
-              min={1}
-              value={numberInput}
-              onChange={(event) => setNumberInput(event.target.value)}
-              className="w-28"
-            />
+            <Input id="number-jump" type="number" min={1} value={numberInput} onChange={(event) => setNumberInput(event.target.value)} className="w-28" />
             <Button variant="outline" onClick={handleJump}>
               Ir
             </Button>
@@ -110,9 +103,7 @@ export default function NumberDetailPage() {
 
       {isPending && <LoadingState />}
 
-      {isError && (
-        <ErrorState message="No se pudo cargar la información de este número." onRetry={() => void detailQuery.refetch()} />
-      )}
+      {isError && <ErrorState message="No se pudo cargar la información de este número." onRetry={() => void detailQuery.refetch()} />}
 
       {detailQuery.data && (
         <div className="flex flex-col gap-8">
@@ -125,12 +116,7 @@ export default function NumberDetailPage() {
             <StatisticCard label="Frecuencia" value={`${detailQuery.data.frequency}%`} />
             <StatisticCard label="Retraso" value={detailQuery.data.delay} description="sorteos desde la última vez" />
             <StatisticCard label="Ranking" value={`#${detailQuery.data.ranking}`} />
-            <StatisticCard
-              label="Última aparición"
-              value={
-                detailQuery.data.lastAppearance ? formatPlainDate(detailQuery.data.lastAppearance.drawDate, dateFormat) : "—"
-              }
-            />
+            <StatisticCard label="Última aparición" value={detailQuery.data.lastAppearance ? formatPlainDate(detailQuery.data.lastAppearance.drawDate, dateFormat) : "—"} />
           </div>
 
           <section>
@@ -147,12 +133,7 @@ export default function NumberDetailPage() {
               <Card>
                 <CardContent className="flex flex-col gap-3 pt-4">
                   {detailQuery.data.distributionByGame.map((entry) => (
-                    <StatBar
-                      key={entry.game}
-                      label={gameLabel(games, entry.game)}
-                      value={entry.count}
-                      total={detailQuery.data!.distributionByGame.reduce((acc, e) => acc + e.count, 0)}
-                    />
+                    <StatBar key={entry.game} label={gameLabel(games, entry.game)} value={entry.count} total={detailQuery.data!.distributionByGame.reduce((acc, e) => acc + e.count, 0)} />
                   ))}
                 </CardContent>
               </Card>

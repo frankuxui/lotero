@@ -51,12 +51,12 @@ export default function NumbersPage() {
     <>
       <PageHeader title="Buscador de números" description="Elige un número para ver sus apariciones y estadísticas." />
 
-      <div className="mb-6 flex flex-col gap-4 sm:max-w-md">
-        <div className="flex flex-col gap-1.5">
+      <div className="mb-6 flex flex-col md:flex-row gap-4 sm:max-w-xl">
+        <div className="flex flex-1 flex-col gap-4">
           <Label htmlFor="numbers-game">Juego (opcional)</Label>
           <GameSelector id="numbers-game" games={games} value={game} onChange={setGame} allowAll allowAllLabel="Cualquier juego" />
         </div>
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-1 flex-col gap-4">
           <Label htmlFor="numbers-input">Número</Label>
           <Input
             id="numbers-input"
@@ -72,15 +72,7 @@ export default function NumbersPage() {
         </div>
       </div>
 
-      <NumberGrid
-        min={min}
-        max={max}
-        mode="single"
-        value={selected}
-        onChange={setSelected}
-        aria-label="Selector de número a buscar"
-        className="max-w-xl"
-      />
+      <NumberGrid min={min} max={max} mode="single" value={selected} onChange={setSelected} aria-label="Selector de número a buscar" className="max-w-xl" />
 
       <div className="mt-6">
         <Button onClick={handleSearch} disabled={selected.length === 0}>

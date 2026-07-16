@@ -14,7 +14,7 @@ export function NumberCombinationField({
   invalid,
   disabled,
   id,
-  allowRandom = true,
+  allowRandom = true
 }: {
   config: GameConfig;
   value: number[];
@@ -42,24 +42,12 @@ export function NumberCombinationField({
         />
         <div className="flex gap-2">
           {allowRandom && (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              disabled={disabled}
-              onClick={() => onChange(randomValidCombination(config))}
-            >
+            <Button type="button" variant="outline" size="sm" disabled={disabled} onClick={() => onChange(randomValidCombination(config))}>
               <Shuffle aria-hidden="true" />
               Aleatorio
             </Button>
           )}
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            disabled={disabled || value.length === 0}
-            onClick={() => onChange([])}
-          >
+          <Button type="button" variant="outline" size="sm" disabled={disabled || value.length === 0} onClick={() => onChange([])}>
             <X aria-hidden="true" />
             Limpiar
           </Button>

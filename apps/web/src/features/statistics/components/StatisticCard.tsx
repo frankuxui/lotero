@@ -5,10 +5,10 @@ export function StatisticCard({ label, value, description, icon, className }: { 
   return (
     <Card className={className}>
       <CardContent className="flex items-start justify-between gap-3 pt-4">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</p>
-          <p className="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-50">{value}</p>
-          {description && <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{description}</p>}
+        <div className="w-full">
+          <p className="text-xs font-medium uppercase tracking-wide">{label}</p>
+          <div className="mt-1 w-full text-lg font-semibold text-foreground">{value}</div>
+          {description && <p className="mt-1 text-xs text-foreground/80">{description}</p>}
         </div>
         {icon && <div className="text-indigo-600 dark:text-indigo-400">{icon}</div>}
       </CardContent>

@@ -32,7 +32,7 @@ export function NumberGrid({
   className,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
-  "aria-describedby": ariaDescribedBy,
+  "aria-describedby": ariaDescribedBy
 }: NumberGridProps) {
   const numbers = Array.from({ length: max - min + 1 }, (_, index) => min + index);
   const [focused, setFocused] = useState(value[0] ?? min);
@@ -126,7 +126,7 @@ export function NumberGrid({
                 ? "border-indigo-600 bg-indigo-600 text-white"
                 : "border-slate-300 bg-white text-slate-700 hover:border-indigo-400 hover:bg-indigo-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800",
               isDisabled && "cursor-not-allowed opacity-40 hover:border-slate-300 hover:bg-white dark:hover:bg-slate-900",
-              invalid && "border-red-400",
+              invalid && "border-red-400"
             )}
           >
             {formatLotteryNumber(n)}

@@ -26,9 +26,7 @@ export default function ComparePage() {
   const urlNumbers = searchParams.get("numbers");
 
   const [gameOverride, setGameOverride] = useState<string | null>(null);
-  const initialGame =
-    (urlGame && findGameConfig(games, urlGame) ? urlGame : undefined) ??
-    (defaultGameSetting && findGameConfig(games, defaultGameSetting) ? defaultGameSetting : games[0]?.id);
+  const initialGame = (urlGame && findGameConfig(games, urlGame) ? urlGame : undefined) ?? (defaultGameSetting && findGameConfig(games, defaultGameSetting) ? defaultGameSetting : games[0]?.id);
   const selectedGame = gameOverride ?? initialGame;
   const config = selectedGame ? findGameConfig(games, selectedGame) : undefined;
 
@@ -52,8 +50,7 @@ export default function ComparePage() {
     );
   }
 
-  const defaultValues: Partial<CompareFormValues> | undefined =
-    urlGame === config.id && urlNumbers ? { numbers: parseCombinationText(urlNumbers) } : undefined;
+  const defaultValues: Partial<CompareFormValues> | undefined = urlGame === config.id && urlNumbers ? { numbers: parseCombinationText(urlNumbers) } : undefined;
 
   const handleSubmit = (values: CompareFormValues) => {
     compareMutation.mutate({
@@ -62,7 +59,7 @@ export default function ComparePage() {
       source: values.source,
       dateFrom: values.dateFrom || undefined,
       dateTo: values.dateTo || undefined,
-      minMatches: values.minMatches,
+      minMatches: values.minMatches
     });
   };
 
@@ -77,22 +74,12 @@ export default function ComparePage() {
         <GameSelector id="compare-game" games={games} value={config.id} onChange={setGameOverride} />
       </div>
 
-      <CompareForm
-        key={config.id}
-        config={config}
-        defaultValues={defaultValues}
-        onSubmit={handleSubmit}
-        isSubmitting={compareMutation.isPending}
-      />
+      <CompareForm key={config.id} config={config} defaultValues={defaultValues} onSubmit={handleSubmit} isSubmitting={compareMutation.isPending} />
 
       <div className="mt-8">
-        {compareMutation.isError && (
-          <ErrorState message="No se pudo completar la comparación. Revisa la combinación e inténtalo de nuevo." />
-        )}
+        {compareMutation.isError && <ErrorState message="No se pudo completar la comparación. Revisa la combinación e inténtalo de nuevo." />}
 
-        {compareMutation.isSuccess && results.length === 0 && (
-          <EmptyState title="Sin coincidencias" description="No hay registros que cumplan los filtros indicados." />
-        )}
+        {compareMutation.isSuccess && results.length === 0 && <EmptyState title="Sin coincidencias" description="No hay registros que cumplan los filtros indicados." />}
 
         {compareMutation.isSuccess && results.length > 0 && (
           <div className="grid gap-3 sm:grid-cols-2">
