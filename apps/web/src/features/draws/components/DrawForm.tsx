@@ -69,13 +69,17 @@ export function DrawForm({
         name="numbers"
         render={({ field, fieldState }) => (
           <div className="flex flex-col gap-1.5">
-            <Label>Números</Label>
+            <Label>Números del sorteo</Label>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Introduce los números oficiales tal como salieron; aquí no se generan combinaciones aleatorias.
+            </p>
             <NumberCombinationField
               config={config}
               value={field.value}
               onChange={field.onChange}
               onBlur={field.onBlur}
               invalid={Boolean(fieldState.error)}
+              allowRandom={false}
             />
             {fieldState.error && <p className="text-xs text-red-600 dark:text-red-400">{fieldState.error.message}</p>}
           </div>

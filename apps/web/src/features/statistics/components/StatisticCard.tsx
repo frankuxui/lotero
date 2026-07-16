@@ -1,19 +1,7 @@
 import type { ReactNode } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 
-export function StatisticCard({
-  label,
-  value,
-  description,
-  icon,
-  className,
-}: {
-  label: string;
-  value: ReactNode;
-  description?: string;
-  icon?: ReactNode;
-  className?: string;
-}) {
+export function StatisticCard({ label, value, description, icon, className }: { label: string; value: ReactNode; description?: string; icon?: ReactNode; className?: string }) {
   return (
     <Card className={className}>
       <CardContent className="flex items-start justify-between gap-3 pt-4">

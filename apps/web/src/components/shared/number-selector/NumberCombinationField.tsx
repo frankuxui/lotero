@@ -1,7 +1,7 @@
 import { Shuffle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CombinationInput } from "@/components/shared/number-selector/CombinationInput";
 import { NumberGrid } from "@/components/shared/number-selector/NumberGrid";
+import { NumberSlotsInput } from "@/components/shared/number-selector/NumberSlotsInput";
 import { SelectedNumbers } from "@/components/shared/number-selector/SelectedNumbers";
 import { randomValidCombination } from "@/lib/validation/game-rules";
 import type { GameConfig } from "@/types/game";
@@ -14,6 +14,7 @@ export function NumberCombinationField({
   invalid,
   disabled,
   id,
+  allowRandom = true,
 }: {
   config: GameConfig;
   value: number[];
@@ -22,30 +23,36 @@ export function NumberCombinationField({
   invalid?: boolean;
   disabled?: boolean;
   id?: string;
+  /** Desactívalo cuando los números son un resultado real que se introduce a mano (sorteos), no una predicción. */
+  allowRandom?: boolean;
 }) {
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <CombinationInput
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <NumberSlotsInput
           id={id}
+          count={config.numbers.count}
+          min={config.numbers.min}
+          max={config.numbers.max}
           value={value}
           onChange={onChange}
           onBlur={onBlur}
           invalid={invalid}
           disabled={disabled}
-          className="sm:flex-1"
         />
         <div className="flex gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            disabled={disabled}
-            onClick={() => onChange(randomValidCombination(config))}
-          >
-            <Shuffle aria-hidden="true" />
-            Aleatorio
-          </Button>
+          {allowRandom && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={disabled}
+              onClick={() => onChange(randomValidCombination(config))}
+            >
+              <Shuffle aria-hidden="true" />
+              Aleatorio
+            </Button>
+          )}
           <Button
             type="button"
             variant="outline"

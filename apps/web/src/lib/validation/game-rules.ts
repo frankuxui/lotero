@@ -25,7 +25,12 @@ export function buildNumbersSchema(config: GameConfig) {
     });
   }
 
-  // El orden final (si el juego lo requiere) lo aplica la API al persistir; aquí solo se valida forma/rango.
+  // El selector de casillas se rellena de izquierda a derecha: cada número debe ser mayor
+  // que el anterior para detectar errores de tecleo (p. ej. 01, 13, 24, 19 → el 19 está fuera de orden).
+  schema = schema.refine((numbers) => numbers.every((n, i) => i === 0 || n > numbers[i - 1]!), {
+    message: "Cada número debe ser mayor que el anterior (orden ascendente, de izquierda a derecha)",
+  });
+
   return schema;
 }
 
