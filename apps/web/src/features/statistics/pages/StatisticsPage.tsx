@@ -192,6 +192,32 @@ export default function StatisticsPage() {
             </div>
           </section>
 
+          {data.extraFrequencies.length > 0 && (
+            <section>
+              <SectionHeader title="Extras más frecuentes" description="Complementario, reintegro y joker con más apariciones." />
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {data.extraFrequencies.map((extra) => (
+                  <Card key={extra.key}>
+                    <CardContent className="flex flex-col gap-2 pt-4">
+                      <p className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{extra.label}</p>
+                      {extra.top.length === 0 && <p className="text-sm text-slate-500 dark:text-slate-400">Sin datos.</p>}
+                      {extra.top.map((item) => (
+                        <div key={item.value} className="flex items-center justify-between">
+                          {extra.type === "number" ? (
+                            <NumberBadge value={item.value as number} size="sm" variant="extra" />
+                          ) : (
+                            <span className="text-sm font-medium tabular-nums">{item.value}</span>
+                          )}
+                          <span className="text-sm text-slate-500 dark:text-slate-400">{item.count} veces</span>
+                        </div>
+                      ))}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          )}
+
           <section>
             <SectionHeader title="Pares y tríos más frecuentes" />
             <div className="grid gap-3 sm:grid-cols-2">

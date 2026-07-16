@@ -54,8 +54,9 @@ El repositorio entrega sorteos por fecha descendente; `computeStatistics` depend
 - Suma media: promedio de la suma de combinaciones, dos decimales.
 - Pares y tríos: diez combinaciones de tamaño 2/3 más frecuentes.
 - Consecutivos: un sorteo cuenta una vez si contiene al menos un par `n, n+1`.
+- Extras: para cada campo de `config.extras` (complementario, reintegro, joker, según el juego) se calculan los diez valores con más apariciones (`extraFrequencies`). Los valores `number` se agregan por igualdad exacta; los `string` (joker) no tienen rango fijo, así que solo se listan los valores observados, sin completar el resto del dominio.
 
-Con cero sorteos se devuelven frecuencias/retrasos para todo el rango, porcentajes y promedio en cero, y fechas nulas.
+Con cero sorteos se devuelven frecuencias/retrasos para todo el rango, porcentajes y promedio en cero, y fechas nulas. `extraFrequencies` devuelve un `top` vacío por extra.
 
 ## Buscador de números
 

@@ -31,6 +31,19 @@ export interface NumberTrio {
   count: number;
 }
 
+export interface ExtraValueFrequency {
+  value: number | string;
+  count: number;
+  percentage: number;
+}
+
+export interface ExtraFrequency {
+  key: string;
+  label: string;
+  type: "number" | "string";
+  top: ExtraValueFrequency[];
+}
+
 export interface StatisticsResponse {
   game: string;
   totalDraws: number;
@@ -45,4 +58,5 @@ export interface StatisticsResponse {
   topPairs: NumberPair[];
   topTrios: NumberTrio[];
   consecutive: { drawsWithConsecutive: number; percentage: number };
+  extraFrequencies: ExtraFrequency[];
 }
