@@ -30,19 +30,19 @@ export function SheetContent({ className, side = "bottom", open, children, close
     <AnimatePresence>
       {open && (
         <DialogPrimitive.Portal forceMount>
-          <DialogPrimitive.Overlay asChild forceMount>
+          <DialogPrimitive.Overlay asChild forceMount className="bg-foreground/10! backdrop-blur-xs">
             <motion.div className="fixed inset-0 z-50 bg-slate-950/50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} />
           </DialogPrimitive.Overlay>
-          <DialogPrimitive.Content asChild forceMount {...props}>
+          <DialogPrimitive.Content asChild forceMount {...props} className="max-w-68!">
             <motion.div
-              className={cn("fixed z-50 flex flex-col gap-4 border-slate-200 bg-white shadow-lg dark:border-slate-800 dark:bg-slate-900", sheetSideClass[side], className)}
+              className={cn("fixed z-50 flex flex-col gap-4 bg-background border-0!", sheetSideClass[side], className)}
               {...sheetSideMotion[side]}
               transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
             >
               {children}
               {closeButton && (
                 <DialogPrimitive.Close
-                  className="absolute right-4 top-4 rounded-sm text-slate-500 transition-colors hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 dark:text-slate-400 dark:hover:text-slate-100"
+                  className="absolute right-4 top-4 rounded-sm transition-colors hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 "
                   aria-label="Cerrar"
                 >
                   <X className="size-4" />
@@ -61,6 +61,6 @@ export function SheetHeader({ className, ...props }: React.HTMLAttributes<HTMLDi
 }
 
 export const SheetTitle = React.forwardRef<React.ComponentRef<typeof DialogPrimitive.Title>, React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>>(({ className, ...props }, ref) => (
-  <DialogPrimitive.Title ref={ref} className={cn("text-lg font-semibold text-slate-900 dark:text-slate-100", className)} {...props} />
+  <DialogPrimitive.Title ref={ref} className={cn("text-lg font-semibold text-foreground", className)} {...props} />
 ));
 SheetTitle.displayName = "SheetTitle";

@@ -19,7 +19,7 @@ export function createApp(): Express {
 
   app.use(cors({ origin: env.corsOrigin }));
   app.use(express.json());
-  app.use(pinoHttp({ logger }));
+  app.use(pinoHttp({ logger, autoLogging: env.httpLogs }));
 
   app.get("/api/health", (_req, res) => {
     sendSuccess(res, { status: "ok", uptime: process.uptime() });

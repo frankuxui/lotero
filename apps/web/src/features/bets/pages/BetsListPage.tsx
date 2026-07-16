@@ -123,17 +123,17 @@ export default function BetsListPage() {
       />
 
       <FilterBar>
-        <div className="flex flex-col gap-1.5">
+        <div className="grid w-full gap-4">
           <Label htmlFor="bets-filter-game">Juego</Label>
-          <GameSelector id="bets-filter-game" games={games} value={game} onChange={(value) => setParam("game", value)} allowAll className="w-48" />
+          <GameSelector id="bets-filter-game" games={games} value={game} onChange={(value) => setParam("game", value)} allowAll />
         </div>
-        <div className="flex flex-col gap-1.5">
+        <div className="grid w-full gap-4">
           <Label htmlFor="bets-filter-from">Desde</Label>
-          <Input id="bets-filter-from" type="date" value={dateFrom} max={dateTo || undefined} onChange={(event) => setParam("dateFrom", event.target.value)} className="w-40" />
+          <Input id="bets-filter-from" type="date" value={dateFrom} max={dateTo || undefined} onChange={(event) => setParam("dateFrom", event.target.value)} />
         </div>
-        <div className="flex flex-col gap-1.5">
+        <div className="grid w-full gap-4">
           <Label htmlFor="bets-filter-to">Hasta</Label>
-          <Input id="bets-filter-to" type="date" value={dateTo} min={dateFrom || undefined} onChange={(event) => setParam("dateTo", event.target.value)} className="w-40" />
+          <Input id="bets-filter-to" type="date" value={dateTo} min={dateFrom || undefined} onChange={(event) => setParam("dateTo", event.target.value)} />
         </div>
       </FilterBar>
 

@@ -1,4 +1,5 @@
 import { Select } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import type { GameConfig } from "@/types/game";
 
 export function GameSelector({
@@ -12,7 +13,7 @@ export function GameSelector({
   invalid,
   id,
   name,
-  className,
+  className
 }: {
   games: GameConfig[];
   value: string;
@@ -27,16 +28,7 @@ export function GameSelector({
   className?: string;
 }) {
   return (
-    <Select
-      id={id}
-      name={name}
-      value={value}
-      disabled={disabled}
-      invalid={invalid}
-      className={className}
-      onBlur={onBlur}
-      onChange={(event) => onChange(event.target.value)}
-    >
+    <Select id={id} name={name} value={value} disabled={disabled} invalid={invalid} className={cn("w-full h-12", className)} onBlur={onBlur} onChange={(event) => onChange(event.target.value)}>
       {allowAll && <option value="">{allowAllLabel}</option>}
       {games.map((game) => (
         <option key={game.id} value={game.id}>

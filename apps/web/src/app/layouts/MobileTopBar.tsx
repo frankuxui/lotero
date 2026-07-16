@@ -11,10 +11,10 @@ export function MobileTopBar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-30 flex h-20 px-8 items-center justify-between border-b border-slate-200 bg-white/95 backdrop-blur lg:hidden dark:border-slate-800 dark:bg-slate-900/95">
+    <header className="sticky top-0 z-30 flex h-20 px-8 items-center justify-between border-b bg-background/80 backdrop-blur lg:hidden border-border">
       <div className="flex items-center gap-2">
-        <Dices className="size-5 text-indigo-600" aria-hidden="true" />
-        <span className="font-semibold text-slate-900 dark:text-slate-100">Lotero</span>
+        <Dices className="size-6 text-indigo-600" aria-hidden="true" />
+        <span className="font-semibold text-lg text-foreground">Lotero</span>
       </div>
       <div className="inline-flex items-center justify-end gap-2">
         <ThemeToggle />
@@ -22,7 +22,7 @@ export function MobileTopBar() {
           <SheetTrigger asChild>
             <button
               aria-label="Abrir menú"
-              className="rounded-full inline-flex flex-none items-center justify-center size-10 hover:bg-foreground/5 motion-safe:transition-all motion-safe:duration-300"
+              className="rounded-full inline-flex flex-none items-center justify-center size-12 hover:bg-foreground/5 motion-safe:transition-all motion-safe:duration-300"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="size-12" viewBox="0 0 24 24">
                 <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.6" d="M9.41 9.66H9.4m5.2 0h-.01m-5.28 4.7H9.3m5.3 0h-.01"></path>
@@ -34,7 +34,7 @@ export function MobileTopBar() {
               <SheetTitle className="p-0">Menú</SheetTitle>
               <Close onClick={() => setOpen(false)} />
             </SheetHeader>
-            <nav className="flex flex-col gap-1" aria-label="Navegación">
+            <nav className="flex flex-col px-4" aria-label="Navegación">
               {[...primaryNavItems, ...secondaryNavItems].map((item) => {
                 const Icon = item.icon;
                 return (
@@ -45,12 +45,12 @@ export function MobileTopBar() {
                     onClick={() => setOpen(false)}
                     className={({ isActive }) =>
                       cn(
-                        "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                        isActive ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-300" : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                        "flex items-center gap-6 rounded-md px-4 py-3 text-sm font-medium transition-colors",
+                        isActive ? "bg-indigo-500/20 text-indigo-500  dark:text-indigo-400" : "text-foreground/60 hover:bg-foreground/5"
                       )
                     }
                   >
-                    <Icon className="size-4" aria-hidden="true" />
+                    <Icon className="size-5" aria-hidden="true" />
                     {item.label}
                   </NavLink>
                 );

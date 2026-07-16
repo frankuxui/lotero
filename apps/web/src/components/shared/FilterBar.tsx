@@ -1,29 +1,23 @@
 import { useState, type ReactNode } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { MobileSheet } from "@/components/shared/MobileSheet";
 
 export function FilterBar({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="mb-4">
-      <div className="hidden flex-wrap items-center gap-3 sm:flex">{children}</div>
-      <div className="sm:hidden">
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild>
-            <Button type="button" variant="outline" size="sm">
-              <SlidersHorizontal aria-hidden="true" />
-              Filtros
-            </Button>
-          </SheetTrigger>
-          <SheetContent open={open} side="bottom">
-            <SheetHeader>
-              <SheetTitle>Filtros</SheetTitle>
-            </SheetHeader>
-            <div className="flex flex-col gap-3">{children}</div>
-          </SheetContent>
-        </Sheet>
+    <div className="mb-4 w-full">
+      <div className="w-full max-w-full hidden md:grid md:grid-cols-3 gap-4">{children}</div>
+      <div className="sm:hidden w-full max-w-full">
+        <Button type="button" variant="outline" size="sm" onClick={() => setOpen(true)}>
+          <SlidersHorizontal aria-hidden="true" />
+          Filtros
+        </Button>
+
+        <MobileSheet open={open} onOpenChange={setOpen} title="Filtros">
+          <div className="flex flex-col gap-3 w-full">{children}</div>
+        </MobileSheet>
       </div>
     </div>
   );

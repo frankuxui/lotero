@@ -59,14 +59,14 @@ export default function ThemeToggle() {
   };
 
   if (!isMounted) {
-    return <span className="inline-flex size-10" aria-hidden="true" />;
+    return <span className="inline-flex size-12" aria-hidden="true" />;
   }
 
   return (
     <button
       aria-label="Switch theme"
       type="button"
-      className="group inline-flex size-10 items-center justify-center overflow-hidden rounded-full text-foreground backdrop-blur-md transition motion-safe:transition-colors motion-safe:duration-500 hover:bg-foreground/5 focus:bg-foreground/10"
+      className="group inline-flex size-12 items-center justify-center overflow-hidden rounded-full text-foreground backdrop-blur-md transition motion-safe:transition-colors motion-safe:duration-500 hover:bg-foreground/5 focus:bg-foreground/10"
       onClick={handleTheme}
     >
       <span aria-hidden="true" className="sr-only">
