@@ -65,6 +65,8 @@ docker compose logs -f api
 docker compose down
 ```
 
+Tras cada `git pull` que toque `apps/api`, reconstruye la imagen. Si la API sigue devolviendo la forma de datos anterior (el frontend rompe leyendo un campo `undefined`), Compose no recreó el contenedor con la imagen nueva; fuerza con `docker compose up -d --build --force-recreate api`.
+
 `apps/api/Dockerfile` compila el workspace `@lotero/api` en dos etapas y ejecuta `docker-compose.yml` (raíz) con contexto en la raíz del monorepo. El contenedor requiere `apps/api/.env` (mismo archivo que usas en desarrollo); `docker-compose.yml` fija `HOST`, `PORT`, `NODE_ENV` y `DATABASE_URL`, y toma el resto (`CORS_ORIGIN`, `LOG_LEVEL`) de ese `.env`.
 
 **Una sola base de datos:** el volumen `./apps/api/data:/app/apps/api/data` monta el mismo directorio que usa el proceso en desarrollo, así que Docker lee y escribe el mismo archivo `lotero.db`; no se crea una base separada y no se pierden los datos existentes. El contenedor aplica migraciones en cada arranque (`node dist/db/migrate.js`, idempotente) pero nunca ejecuta el seed.
