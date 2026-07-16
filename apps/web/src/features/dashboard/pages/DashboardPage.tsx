@@ -21,7 +21,7 @@ const QUICK_ACTIONS = [
   { to: "/bets/new", label: "Nueva apuesta", icon: PlusCircle },
   { to: "/draws/new", label: "Nuevo sorteo", icon: Ticket },
   { to: "/compare", label: "Comparar combinación", icon: GitCompare },
-  { to: "/numbers", label: "Buscar número", icon: Hash },
+  { to: "/numbers", label: "Buscar número", icon: Hash }
 ];
 
 export default function DashboardPage() {
@@ -38,10 +38,10 @@ export default function DashboardPage() {
 
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {QUICK_ACTIONS.map((action) => (
-          <Button key={action.to} asChild variant="outline" className="h-auto flex-col gap-2 py-4">
+          <Button key={action.to} asChild variant="outline" className="h-auto flex-col py-3 px-6 min-h-22 rounded-xl border-0 bg-foreground/4 hover:bg-foreground/10">
             <Link to={action.to}>
-              <action.icon className="size-5 text-indigo-600 dark:text-indigo-400" aria-hidden="true" />
-              <span className="text-xs font-medium">{action.label}</span>
+              <action.icon className="size-7" aria-hidden="true" />
+              <span className="text-sm font-medium">{action.label}</span>
             </Link>
           </Button>
         ))}
@@ -64,21 +64,11 @@ export default function DashboardPage() {
           <section>
             <SectionHeader title="Resumen" />
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              <StatisticCard
-                label="Sorteos registrados"
-                value={dashboardQuery.data.quickStats.totalDraws}
-                icon={<BarChart3 className="size-5" aria-hidden="true" />}
-              />
-              <StatisticCard
-                label="Apuestas registradas"
-                value={dashboardQuery.data.quickStats.totalBets}
-                icon={<Ticket className="size-5" aria-hidden="true" />}
-              />
+              <StatisticCard label="Sorteos registrados" value={dashboardQuery.data.quickStats.totalDraws} icon={<BarChart3 className="size-5" aria-hidden="true" />} />
+              <StatisticCard label="Apuestas registradas" value={dashboardQuery.data.quickStats.totalBets} icon={<Ticket className="size-5" aria-hidden="true" />} />
               <Card className="col-span-2 sm:col-span-1">
                 <CardContent className="pt-4">
-                  <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                    Por juego
-                  </p>
+                  <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Por juego</p>
                   <div className="flex flex-col gap-1.5">
                     {dashboardQuery.data.quickStats.byGame.map((entry) => (
                       <div key={entry.game} className="flex items-center justify-between gap-2 text-sm">
@@ -95,25 +85,34 @@ export default function DashboardPage() {
           </section>
 
           <section>
-            <SectionHeader title="Últimos sorteos" actions={<Link to="/draws" className="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400">Ver todos</Link>} />
+            <SectionHeader
+              title="Últimos sorteos"
+              actions={
+                <Link to="/draws" className="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400">
+                  Ver todos
+                </Link>
+              }
+            />
             {dashboardQuery.data.recentDraws.length === 0 ? (
               <EmptyState title="Todavía no hay sorteos registrados" />
             ) : (
               <div className="grid gap-3 sm:grid-cols-2">
                 {dashboardQuery.data.recentDraws.map((draw) => (
-                  <DrawCard
-                    key={draw.id}
-                    draw={draw}
-                    gameLabel={gameLabel(games, draw.game)}
-                    to={`/draws/${draw.id}`}
-                  />
+                  <DrawCard key={draw.id} draw={draw} gameLabel={gameLabel(games, draw.game)} to={`/draws/${draw.id}`} />
                 ))}
               </div>
             )}
           </section>
 
           <section>
-            <SectionHeader title="Últimas apuestas" actions={<Link to="/bets" className="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400">Ver todas</Link>} />
+            <SectionHeader
+              title="Últimas apuestas"
+              actions={
+                <Link to="/bets" className="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400">
+                  Ver todas
+                </Link>
+              }
+            />
             {dashboardQuery.data.recentBets.length === 0 ? (
               <EmptyState title="Todavía no has registrado apuestas" />
             ) : (
@@ -132,12 +131,7 @@ export default function DashboardPage() {
             ) : (
               <div className="grid gap-3 sm:grid-cols-2">
                 {dashboardQuery.data.recentMatches.map((match) => (
-                  <ComparisonResultCard
-                    key={`${match.betId}-${match.recordId}`}
-                    result={match}
-                    gameLabel={gameLabel(games, match.game)}
-                    to={`/bets/${match.betId}`}
-                  />
+                  <ComparisonResultCard key={`${match.betId}-${match.recordId}`} result={match} gameLabel={gameLabel(games, match.game)} to={`/bets/${match.betId}`} />
                 ))}
               </div>
             )}

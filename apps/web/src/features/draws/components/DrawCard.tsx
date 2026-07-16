@@ -8,19 +8,7 @@ import { useSettingsStore } from "@/store/settingsStore";
 import type { Draw } from "@/types/draw";
 import type { ExtraFieldConfig } from "@/types/game";
 
-export function DrawCard({
-  draw,
-  gameLabel,
-  extrasConfig,
-  to,
-  actions,
-}: {
-  draw: Draw;
-  gameLabel?: string;
-  extrasConfig?: ExtraFieldConfig[];
-  to?: string;
-  actions?: ReactNode;
-}) {
+export function DrawCard({ draw, gameLabel, extrasConfig, to, actions }: { draw: Draw; gameLabel?: string; extrasConfig?: ExtraFieldConfig[]; to?: string; actions?: ReactNode }) {
   const dateFormat = useSettingsStore((state) => state.dateFormat);
 
   const content = (
@@ -39,11 +27,7 @@ export function DrawCard({
           return (
             <span key={extra.key} className="ml-1 flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
               <span className="font-medium">{extra.label}:</span>
-              {typeof raw === "number" ? (
-                <NumberBadge value={raw} size="sm" variant="extra" />
-              ) : (
-                <span>{String(raw)}</span>
-              )}
+              {typeof raw === "number" ? <NumberBadge value={raw} size="sm" variant="extra" /> : <span>{String(raw)}</span>}
             </span>
           );
         })}
@@ -55,10 +39,7 @@ export function DrawCard({
     <Card>
       <CardContent className="pt-4">
         {to ? (
-          <Link
-            to={to}
-            className="block rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
-          >
+          <Link to={to} className="block rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600">
             {content}
           </Link>
         ) : (

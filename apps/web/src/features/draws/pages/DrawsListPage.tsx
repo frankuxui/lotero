@@ -4,26 +4,27 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { FilterBar } from "@/components/shared/FilterBar";
-import { GameBadge } from "@/components/shared/GameBadge";
 import { GameSelector } from "@/components/shared/GameSelector";
-import { NumberBadge } from "@/components/shared/NumberBadge";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { Pagination } from "@/components/shared/Pagination";
 import { SkeletonCard } from "@/components/shared/SkeletonCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DrawActions } from "@/features/draws/components/DrawActions";
 import { DrawCard } from "@/features/draws/components/DrawCard";
+import { DrawsTable } from "@/features/draws/components/DrawsTable";
 import { useDrawsList } from "@/features/draws/hooks/useDrawsList";
 import { useDeleteDraw } from "@/features/draws/hooks/useDrawMutations";
 import { useGames } from "@/hooks/useGames";
-import { formatPlainDate } from "@/lib/formatters/date";
 import { findGameConfig, gameLabel } from "@/lib/games";
 import { useSettingsStore } from "@/store/settingsStore";
 import { toast } from "@/store/toastStore";
 import type { Draw } from "@/types/draw";
+
+// La paginación y el filtrado por columnas de la tabla de escritorio pasan a ser
+// client-side (TanStack Table) sobre este lote; el máximo permitido por la API basta
+// para el volumen de sorteos manejado y evita "cargar todo el historial" sin límite.
+const TABLE_FETCH_LIMIT = 200;
 
 export default function DrawsListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -35,35 +36,26 @@ export default function DrawsListPage() {
   const game = searchParams.get("game") ?? "";
   const dateFrom = searchParams.get("dateFrom") ?? "";
   const dateTo = searchParams.get("dateTo") ?? "";
-  const offset = Number(searchParams.get("offset") ?? "0");
 
   const gamesQuery = useGames();
   const drawsQuery = useDrawsList({
     game: game || undefined,
     dateFrom: dateFrom || undefined,
     dateTo: dateTo || undefined,
-    limit: itemsPerPage,
-    offset,
+    limit: TABLE_FETCH_LIMIT,
+    offset: 0,
   });
   const deleteMutation = useDeleteDraw();
 
   const [pendingDelete, setPendingDelete] = useState<Draw | null>(null);
 
   const games = useMemo(() => gamesQuery.data ?? [], [gamesQuery.data]);
-  const useTable = viewModeSetting === "table" || viewModeSetting === "auto";
+  const showCardsOnly = viewModeSetting === "cards";
 
   const setParam = (key: string, value: string) => {
     const next = new URLSearchParams(searchParams);
     if (value) next.set(key, value);
     else next.delete(key);
-    next.delete("offset");
-    setSearchParams(next);
-  };
-
-  const setOffset = (value: number) => {
-    const next = new URLSearchParams(searchParams);
-    if (value > 0) next.set("offset", String(value));
-    else next.delete("offset");
     setSearchParams(next);
   };
 
@@ -158,42 +150,18 @@ export default function DrawsListPage() {
 
       {drawsQuery.data && drawsQuery.data.items.length > 0 && (
         <>
-          {useTable ? (
+          {!showCardsOnly && (
             <div className="hidden md:block">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Juego</TableHead>
-                    <TableHead>Fecha</TableHead>
-                    <TableHead>Números</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {drawsQuery.data.items.map((draw) => (
-                    <TableRow key={draw.id}>
-                      <TableCell>
-                        <GameBadge game={draw.game} label={gameLabel(games, draw.game)} />
-                      </TableCell>
-                      <TableCell>{formatPlainDate(draw.drawDate, dateFormat)}</TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-1">
-                          {draw.numbers.map((n) => (
-                            <NumberBadge key={n} value={n} size="sm" />
-                          ))}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DrawActions draw={draw} onDeleteRequest={() => requestDelete(draw)} />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <DrawsTable
+                draws={drawsQuery.data.items}
+                games={games}
+                dateFormat={dateFormat}
+                onDeleteRequest={requestDelete}
+              />
             </div>
-          ) : null}
+          )}
 
-          <div className={useTable ? "grid gap-3 md:hidden" : "grid gap-3 sm:grid-cols-2"}>
+          <div className={showCardsOnly ? "grid gap-3 sm:grid-cols-2" : "grid gap-3 md:hidden"}>
             {drawsQuery.data.items.map((draw) => (
               <DrawCard
                 key={draw.id}
@@ -205,8 +173,6 @@ export default function DrawsListPage() {
               />
             ))}
           </div>
-
-          <Pagination total={drawsQuery.data.meta.total} limit={itemsPerPage} offset={offset} onOffsetChange={setOffset} />
         </>
       )}
 

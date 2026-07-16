@@ -42,7 +42,7 @@ export default function BetsListPage() {
     dateFrom: dateFrom || undefined,
     dateTo: dateTo || undefined,
     limit: itemsPerPage,
-    offset,
+    offset
   });
   const createMutation = useCreateBet();
   const deleteMutation = useDeleteBet();
@@ -80,8 +80,8 @@ export default function BetsListPage() {
         onError: () => {
           toast({ title: "No se pudo duplicar la apuesta", variant: "error" });
           setDuplicatingId(null);
-        },
-      },
+        }
+      }
     );
   };
 
@@ -93,7 +93,7 @@ export default function BetsListPage() {
       },
       onError: () => {
         toast({ title: "No se pudo eliminar la apuesta", variant: "error" });
-      },
+      }
     });
   };
 
@@ -125,44 +125,21 @@ export default function BetsListPage() {
       <FilterBar>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="bets-filter-game">Juego</Label>
-          <GameSelector
-            id="bets-filter-game"
-            games={games}
-            value={game}
-            onChange={(value) => setParam("game", value)}
-            allowAll
-            className="w-48"
-          />
+          <GameSelector id="bets-filter-game" games={games} value={game} onChange={(value) => setParam("game", value)} allowAll className="w-48" />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="bets-filter-from">Desde</Label>
-          <Input
-            id="bets-filter-from"
-            type="date"
-            value={dateFrom}
-            max={dateTo || undefined}
-            onChange={(event) => setParam("dateFrom", event.target.value)}
-            className="w-40"
-          />
+          <Input id="bets-filter-from" type="date" value={dateFrom} max={dateTo || undefined} onChange={(event) => setParam("dateFrom", event.target.value)} className="w-40" />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="bets-filter-to">Hasta</Label>
-          <Input
-            id="bets-filter-to"
-            type="date"
-            value={dateTo}
-            min={dateFrom || undefined}
-            onChange={(event) => setParam("dateTo", event.target.value)}
-            className="w-40"
-          />
+          <Input id="bets-filter-to" type="date" value={dateTo} min={dateFrom || undefined} onChange={(event) => setParam("dateTo", event.target.value)} className="w-40" />
         </div>
       </FilterBar>
 
       {betsQuery.isPending && <SkeletonCard count={itemsPerPage} />}
 
-      {betsQuery.isError && (
-        <ErrorState message="No se pudieron cargar las apuestas." onRetry={() => void betsQuery.refetch()} />
-      )}
+      {betsQuery.isError && <ErrorState message="No se pudieron cargar las apuestas." onRetry={() => void betsQuery.refetch()} />}
 
       {betsQuery.data && betsQuery.data.items.length === 0 && (
         <EmptyState
@@ -200,18 +177,15 @@ export default function BetsListPage() {
                       <TableCell>{bet.label || "—"}</TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
-                          {bet.lines[0]?.numbers.map((n) => <NumberBadge key={n} value={n} size="sm" />)}
+                          {bet.lines[0]?.numbers.map((n) => (
+                            <NumberBadge key={n} value={n} size="sm" />
+                          ))}
                         </div>
                       </TableCell>
                       <TableCell>{bet.lines.length}</TableCell>
                       <TableCell>{formatTimestamp(bet.createdAt)}</TableCell>
                       <TableCell className="text-right">
-                        <BetActions
-                          bet={bet}
-                          onDuplicate={() => handleDuplicate(bet)}
-                          onDeleteRequest={() => requestDelete(bet)}
-                          isDuplicating={duplicatingId === bet.id}
-                        />
+                        <BetActions bet={bet} onDuplicate={() => handleDuplicate(bet)} onDeleteRequest={() => requestDelete(bet)} isDuplicating={duplicatingId === bet.id} />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -229,14 +203,7 @@ export default function BetsListPage() {
                 extrasConfig={findGameConfig(games, bet.game)?.extras}
                 to={`/bets/${bet.id}`}
                 compact
-                actions={
-                  <BetActions
-                    bet={bet}
-                    onDuplicate={() => handleDuplicate(bet)}
-                    onDeleteRequest={() => requestDelete(bet)}
-                    isDuplicating={duplicatingId === bet.id}
-                  />
-                }
+                actions={<BetActions bet={bet} onDuplicate={() => handleDuplicate(bet)} onDeleteRequest={() => requestDelete(bet)} isDuplicating={duplicatingId === bet.id} />}
               />
             ))}
           </div>

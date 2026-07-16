@@ -12,6 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FrequencyHeatmap } from "@/features/statistics/components/FrequencyHeatmap";
+import { FrequencyLegend } from "@/features/statistics/components/FrequencyLegend";
 import { StatBar } from "@/features/statistics/components/StatBar";
 import { StatisticCard } from "@/features/statistics/components/StatisticCard";
 import { useStatistics } from "@/features/statistics/hooks/useStatistics";
@@ -122,6 +123,9 @@ export default function StatisticsPage() {
 
           <section>
             <SectionHeader title="Mapa de frecuencias" description="Cuántas veces salió cada número." />
+            <div className="mb-3">
+              <FrequencyLegend />
+            </div>
             <FrequencyHeatmap frequencies={data.frequencies} />
           </section>
 

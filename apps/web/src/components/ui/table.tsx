@@ -13,6 +13,15 @@ export function TableHeader({ className, ...props }: React.HTMLAttributes<HTMLTa
   return <thead className={cn("bg-slate-50 dark:bg-slate-900/60", className)} {...props} />;
 }
 
+export function TableFooter({ className, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) {
+  return (
+    <tfoot
+      className={cn("border-t border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/60", className)}
+      {...props}
+    />
+  );
+}
+
 export function TableBody({ className, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) {
   return (
     <tbody
