@@ -61,6 +61,18 @@ export default function HistoryPage() {
     setBatchSize(itemsPerPage);
   };
 
+  const hasActiveFilters = Boolean(type !== "all" || game || dateFrom || dateTo || numberFilter);
+  const clearFilters = () => {
+    const next = new URLSearchParams(searchParams);
+    next.delete("type");
+    next.delete("game");
+    next.delete("dateFrom");
+    next.delete("dateTo");
+    next.delete("number");
+    setSearchParams(next);
+    setBatchSize(itemsPerPage);
+  };
+
   const isPending =
     gamesQuery.isPending ||
     (drawsQuery.fetchStatus !== "idle" && drawsQuery.isPending) ||
@@ -142,7 +154,7 @@ export default function HistoryPage() {
     <>
       <PageHeader title="Historial" description="Historial unificado de sorteos y apuestas." />
 
-      <FilterBar>
+      <FilterBar hasActiveFilters={hasActiveFilters} onClearFilters={clearFilters}>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="history-type">Tipo</Label>
           <Select id="history-type" value={type} onChange={(event) => setParam("type", event.target.value)} className="w-40">

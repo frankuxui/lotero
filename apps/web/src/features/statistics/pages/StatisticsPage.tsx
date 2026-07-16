@@ -47,6 +47,14 @@ export default function StatisticsPage() {
     setSearchParams(next);
   };
 
+  const hasActiveFilters = Boolean(dateFrom || dateTo);
+  const clearFilters = () => {
+    const next = new URLSearchParams(searchParams);
+    next.delete("dateFrom");
+    next.delete("dateTo");
+    setSearchParams(next);
+  };
+
   if (gamesQuery.isPending) {
     return (
       <>
@@ -72,7 +80,7 @@ export default function StatisticsPage() {
     <>
       <PageHeader title="Estadísticas" description="Frecuencias, calientes/fríos y patrones de los sorteos." />
 
-      <FilterBar>
+      <FilterBar hasActiveFilters={hasActiveFilters} onClearFilters={clearFilters}>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="stats-game">Juego</Label>
           <GameSelector id="stats-game" games={games} value={game} onChange={setGameOverride} className="w-48" />

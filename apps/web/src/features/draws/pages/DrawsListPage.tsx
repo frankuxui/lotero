@@ -59,6 +59,15 @@ export default function DrawsListPage() {
     setSearchParams(next);
   };
 
+  const hasActiveFilters = Boolean(game || dateFrom || dateTo);
+  const clearFilters = () => {
+    const next = new URLSearchParams(searchParams);
+    next.delete("game");
+    next.delete("dateFrom");
+    next.delete("dateTo");
+    setSearchParams(next);
+  };
+
   const deleteDraw = (id: string) => {
     deleteMutation.mutate(id, {
       onSuccess: () => {
@@ -94,7 +103,7 @@ export default function DrawsListPage() {
         }
       />
 
-      <FilterBar>
+      <FilterBar hasActiveFilters={hasActiveFilters} onClearFilters={clearFilters}>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="draws-filter-game">Juego</Label>
           <GameSelector id="draws-filter-game" games={games} value={game} onChange={(value) => setParam("game", value)} allowAll className="w-48" />

@@ -68,6 +68,16 @@ export default function BetsListPage() {
     setSearchParams(next);
   };
 
+  const hasActiveFilters = Boolean(game || dateFrom || dateTo);
+  const clearFilters = () => {
+    const next = new URLSearchParams(searchParams);
+    next.delete("game");
+    next.delete("dateFrom");
+    next.delete("dateTo");
+    next.delete("offset");
+    setSearchParams(next);
+  };
+
   const handleDuplicate = (bet: Bet) => {
     setDuplicatingId(bet.id);
     createMutation.mutate(
@@ -122,7 +132,7 @@ export default function BetsListPage() {
         }
       />
 
-      <FilterBar>
+      <FilterBar hasActiveFilters={hasActiveFilters} onClearFilters={clearFilters}>
         <div className="grid w-full gap-4">
           <Label htmlFor="bets-filter-game">Juego</Label>
           <GameSelector id="bets-filter-game" games={games} value={game} onChange={(value) => setParam("game", value)} allowAll />
