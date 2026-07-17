@@ -38,11 +38,11 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col mx-auto w-full max-w-5xl">
-      <PageHeader title="Inicio" description="Resumen de tu actividad en Lotero." icon={<Home16 className="size-14" />} />
+      <PageHeader title="Inicio" description="Resumen de toda la actividad reciente en Lotero, incluyendo sorteos, apuestas y sugerencias." icon={<Home16 className="size-14" />} />
 
-      <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4 mt-8">
         {QUICK_ACTIONS.map((action) => (
-          <Button key={action.to} asChild variant="outline" className="h-auto flex-col gap-1 py-3 px-6 min-h-22 rounded-xl border-0 bg-foreground/4 hover:bg-foreground/10">
+          <Button key={action.to} asChild variant="outline" className="h-auto flex-col gap-1 py-3 px-6 min-h-22 rounded-xl border-0 bg-foreground/4 text-foreground hover:bg-foreground/10">
             <Link to={action.to}>
               <action.icon className="size-7" aria-hidden="true" />
               <span className="text-sm font-medium">{action.label}</span>

@@ -11,9 +11,12 @@ const lineInputSchema = z.object({
   extras: extrasInputSchema.default({}),
 });
 
+const createdAtInputSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "La fecha de creación debe tener formato AAAA-MM-DD");
+
 const createBetSchema = z.object({
   game: gameIdSchema,
   label: z.string().trim().min(1).optional(),
+  createdAt: createdAtInputSchema.optional(),
   lines: z.array(lineInputSchema).min(1, "La apuesta debe tener al menos una línea"),
 });
 
@@ -26,6 +29,7 @@ export function parseCreateBet(input: unknown): CreateBetInput {
   return {
     game: base.game,
     ...(base.label !== undefined && { label: base.label }),
+    ...(base.createdAt !== undefined && { createdAt: base.createdAt }),
     lines: base.lines.map((line) => ({
       numbers: numbersSchema.parse(line.numbers),
       extras: extrasSchema.parse(line.extras),
@@ -36,6 +40,7 @@ export function parseCreateBet(input: unknown): CreateBetInput {
 const updateBetSchema = z.object({
   game: gameIdSchema.optional(),
   label: z.string().trim().min(1).optional(),
+  createdAt: createdAtInputSchema.optional(),
   lines: z.array(lineInputSchema).min(1).optional(),
 });
 
@@ -48,6 +53,7 @@ export function parseUpdateBet(input: unknown, currentGame: string): UpdateBetIn
   return {
     ...(base.game !== undefined && { game: base.game }),
     ...(base.label !== undefined && { label: base.label }),
+    ...(base.createdAt !== undefined && { createdAt: base.createdAt }),
     ...(base.lines !== undefined && {
       lines: base.lines.map((line) => ({
         numbers: numbersSchema.parse(line.numbers),

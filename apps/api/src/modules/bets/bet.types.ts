@@ -21,6 +21,8 @@ export interface CreateBetLineInput {
 export interface CreateBetInput {
   game: string;
   label?: string;
+  /** Fecha de creación elegida por el usuario (AAAA-MM-DD); si se omite, se usa el momento actual. */
+  createdAt?: string;
   lines: CreateBetLineInput[];
 }
 

@@ -28,15 +28,15 @@ export default function SettingsPage() {
   const setConfirmBeforeDelete = useSettingsStore((state) => state.setConfirmBeforeDelete);
 
   return (
-    <>
+    <div className="w-full max-w-xl mx-auto">
       <PageHeader title="Configuración" description="Preferencias locales de la aplicación, guardadas en este dispositivo." />
 
-      <div className="flex max-w-2xl flex-col gap-8">
-        <section>
+      <div className="flex flex-col w-full gap-8">
+        <section className="w-full">
           <SectionHeader title="Visualización" />
-          <Card>
-            <CardContent className="flex flex-col gap-5 pt-4">
-              <div className="flex flex-col gap-1.5 sm:max-w-xs">
+          <Card className="w-full p-8">
+            <CardContent className="flex flex-col gap-5">
+              <div className="flex flex-col gap-4 ">
                 <Label htmlFor="settings-date-format">Formato de fecha</Label>
                 <Select id="settings-date-format" value={dateFormat} onChange={(event) => setDateFormat(event.target.value as "dd/mm/yyyy" | "yyyy-mm-dd" | "long")}>
                   <option value="dd/mm/yyyy">DD/MM/AAAA</option>
@@ -45,7 +45,7 @@ export default function SettingsPage() {
                 </Select>
               </div>
 
-              <div className="flex flex-col gap-1.5 sm:max-w-xs">
+              <div className="flex flex-col gap-4 ">
                 <Label htmlFor="settings-items-per-page">Elementos por página</Label>
                 <Select id="settings-items-per-page" value={String(itemsPerPage)} onChange={(event) => setItemsPerPage(Number(event.target.value))}>
                   <option value="5">5</option>
@@ -55,7 +55,7 @@ export default function SettingsPage() {
                 </Select>
               </div>
 
-              <div className="flex flex-col gap-1.5 sm:max-w-xs">
+              <div className="flex flex-col gap-4 ">
                 <Label htmlFor="settings-view-mode">Modo de visualización de listados</Label>
                 <Select id="settings-view-mode" value={viewMode} onChange={(event) => setViewMode(event.target.value as "auto" | "cards" | "table")}>
                   <option value="auto">Automático (tabla en escritorio, tarjetas en móvil)</option>
@@ -64,7 +64,7 @@ export default function SettingsPage() {
                 </Select>
               </div>
 
-              <div className="flex flex-col gap-1.5 sm:max-w-xs">
+              <div className="flex flex-col gap-4 ">
                 <Label htmlFor="settings-theme">Tema</Label>
                 <Select id="settings-theme" value={theme} onChange={(event) => setTheme(event.target.value as "system" | "light" | "dark")}>
                   <option value="system">Automático (según el sistema)</option>
@@ -78,9 +78,9 @@ export default function SettingsPage() {
 
         <section>
           <SectionHeader title="Apuestas y sorteos" />
-          <Card>
-            <CardContent className="flex flex-col gap-5 pt-4">
-              <div className="flex flex-col gap-1.5 sm:max-w-xs">
+          <Card className="w-full p-8">
+            <CardContent className="flex flex-col gap-5">
+              <div className="flex flex-col gap-4">
                 <Label htmlFor="settings-default-game">Juego predeterminado</Label>
                 <GameSelector id="settings-default-game" games={games} value={defaultGame ?? ""} onChange={(value) => setDefaultGame(value || null)} allowAll allowAllLabel="Sin preferencia" />
               </div>
@@ -96,6 +96,6 @@ export default function SettingsPage() {
           </Card>
         </section>
       </div>
-    </>
+    </div>
   );
 }

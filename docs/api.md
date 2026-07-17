@@ -34,7 +34,7 @@ Zod produce 400, juego o recurso inexistente produce 404 y los errores no contro
 | `PATCH /api/draws/:id` | Campos parciales | Sorteo actualizado | 400, 404 |
 | `DELETE /api/draws/:id` | `id` | 204; lista y detalle | 404 |
 | `GET /api/bets` | `game,dateFrom,dateTo,limit,offset` | Lista paginada; apuestas e historial | 400, 404 |
-| `POST /api/bets` | `game,label?,lines[]` | Apuesta, 201; formulario y duplicación | 400, 404 |
+| `POST /api/bets` | `game,label?,createdAt?,lines[]` | Apuesta, 201; formulario y duplicación | 400, 404 |
 | `GET /api/bets/:id` | `id` | Apuesta con líneas; detalle y edición | 404 |
 | `PATCH /api/bets/:id` | Campos parciales | Apuesta actualizada | 400, 404 |
 | `DELETE /api/bets/:id` | `id` | 204; lista y detalle | 404 |
@@ -66,7 +66,7 @@ El acierto/desacierto (`SuggestionOutcome`) **no se persiste**: se calcula en el
 | Tabla | Contenido |
 |---|---|
 | `draws` | Juego, fecha, números, extras y timestamps |
-| `bets` | Juego, etiqueta y timestamps |
+| `bets` | Juego, etiqueta y timestamps. `created_at` es editable por el usuario al crear/editar (para registrar apuestas de fechas pasadas): se guarda como AAAA-MM-DD + hora real de la operación, para conservar orden cronológico entre apuestas del mismo día. `updated_at` siempre refleja el momento real de la escritura. |
 | `bet_lines` | Líneas asociadas con números y extras |
 | `suggestions` | Juego, fecha, números, extras, `algorithm_version`, desglose de señales (`signals`) y timestamps; índice único `(game, suggestion_date)` |
 

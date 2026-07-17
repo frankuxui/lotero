@@ -69,17 +69,17 @@ export default function NumberDetailPage() {
   const isError = gamesQuery.isError || detailQuery.isError;
 
   return (
-    <>
+    <div className="w-full mx-auto max-w-full sm:max-w-4xl">
       <PageHeader title={`Número ${formatLotteryNumber(parsedNumber)}`} breadcrumbs={breadcrumbs} />
 
-      <div className="mb-6 flex flex-wrap items-end gap-3">
+      <div className="w-full max-w-full mb-6 flex flex-wrap items-end gap-3">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="number-jump">Ir a otro número</Label>
           <div className="flex gap-2">
             <Input id="number-jump" type="number" min={1} value={numberInput} onChange={(event) => setNumberInput(event.target.value)} className="w-28" />
-            <Button variant="outline" onClick={handleJump}>
+            <button className="size-12 bg-background border border-border rounded inline-flex items-center justify-center flex-none font-semibold" onClick={handleJump}>
               Ir
-            </Button>
+            </button>
           </div>
         </div>
         <div className="flex flex-col gap-1.5">
@@ -116,12 +116,12 @@ export default function NumberDetailPage() {
             <StatisticCard label="Frecuencia" value={`${detailQuery.data.frequency}%`} />
             <StatisticCard label="Retraso" value={detailQuery.data.delay} description="sorteos desde la última vez" />
             <StatisticCard label="Ranking" value={`#${detailQuery.data.ranking}`} />
-            <StatisticCard label="Última aparición" value={detailQuery.data.lastAppearance ? formatPlainDate(detailQuery.data.lastAppearance.drawDate, dateFormat) : "—"} />
+            <StatisticCard label="Última aparición" value={detailQuery.data.lastAppearance ? formatPlainDate(detailQuery.data.lastAppearance.drawDate, dateFormat) : "—"} className="" />
           </div>
 
           <section>
             <SectionHeader title="Apariciones" description="Sorteos y apuestas en las que aparece este número." />
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2 mt-8">
               <StatisticCard label="En sorteos" value={detailQuery.data.appearances.draws} />
               <StatisticCard label="En apuestas" value={detailQuery.data.appearances.bets} />
             </div>
@@ -129,8 +129,8 @@ export default function NumberDetailPage() {
 
           {detailQuery.data.byGame.length > 1 && (
             <section>
-              <SectionHeader title="Distribución por juego" />
-              <Card>
+              <SectionHeader title="Distribución por juego" description="Distribución de apariciones de este número por juego." />
+              <Card className="mt-8">
                 <CardContent className="flex flex-col gap-3 pt-4">
                   {detailQuery.data.distributionByGame.map((entry) => (
                     <StatBar key={entry.game} label={gameLabel(games, entry.game)} value={entry.count} total={detailQuery.data!.distributionByGame.reduce((acc, e) => acc + e.count, 0)} />
@@ -141,11 +141,11 @@ export default function NumberDetailPage() {
           )}
 
           <section>
-            <SectionHeader title="Sorteos relacionados" />
+            <SectionHeader title="Sorteos relacionados" description="Sorteos y apuestas en las que aparece este número." />
             {detailQuery.data.relatedDraws.length === 0 ? (
               <EmptyState title="Sin sorteos con este número" />
             ) : (
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-3 sm:grid-cols-2 mt-8">
                 {detailQuery.data.relatedDraws.map((draw) => (
                   <DrawCard key={draw.id} draw={draw} gameLabel={gameLabel(games, draw.game)} to={`/draws/${draw.id}`} />
                 ))}
@@ -154,20 +154,20 @@ export default function NumberDetailPage() {
           </section>
 
           <section>
-            <SectionHeader title="Apuestas relacionadas" />
+            <SectionHeader title="Apuestas relacionadas" description="Sorteos y apuestas en las que aparece este número." />
             {detailQuery.data.relatedBets.length === 0 ? (
-              <EmptyState title="Sin apuestas con este número" />
+              <EmptyState title="Sin apuestas con este número" className="mt-8" />
             ) : (
-              <div className="grid gap-2">
+              <div className="grid gap-2 mt-8">
                 {detailQuery.data.relatedBets.map((line) => (
                   <Link
                     key={line.lineId}
                     to={`/bets/${line.betId}`}
-                    className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-slate-200 p-3 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/60"
+                    className="flex flex-wrap p-4 gap-2 sm:gap-8 rounded-lg items-center justify-between bg-background transition-all duration-200 hover:shadow-sm hover:shadow-foreground/10"
                   >
                     <div className="flex flex-wrap items-center gap-1.5">
                       {line.numbers.map((n) => (
-                        <NumberBadge key={n} value={n} size="sm" />
+                        <NumberBadge key={n} value={n} size="md" />
                       ))}
                     </div>
                     <span className="text-xs text-slate-500 dark:text-slate-400">
@@ -180,6 +180,6 @@ export default function NumberDetailPage() {
           </section>
         </div>
       )}
-    </>
+    </div>
   );
 }

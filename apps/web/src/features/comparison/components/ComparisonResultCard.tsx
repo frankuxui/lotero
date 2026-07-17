@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { GameBadge } from "@/components/shared/GameBadge";
 import { NumberBadge } from "@/components/shared/NumberBadge";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatPlainDate } from "@/lib/formatters/date";
+import { formatDateLong } from "@/lib/formatters/date";
 import { useSettingsStore } from "@/store/settingsStore";
 import type { ComparisonResult } from "@/types/comparison";
 
@@ -13,24 +13,26 @@ export function ComparisonResultCard({ result, gameLabel, to }: { result: Compar
 
   const content = (
     <>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">#{result.ranking}</span>
-          <GameBadge game={result.game} label={gameLabel} />
-          <span className="text-xs text-slate-500 dark:text-slate-400">
-            {result.recordType === "draw" ? "Sorteo" : "Apuesta"} · {formatPlainDate(result.date, dateFormat)}
+      <div className="flex flex-col items-start gap-2">
+        <div className="flex items-center gap-2 justify-between w-full">
+          <div className="flex items-center gap-2">
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold bg-foreground text-background">#{result.ranking}</span>
+            <GameBadge game={result.game} label={gameLabel} />
+          </div>
+          <span className="rounded-full bg-foreground/10  px-2.5 py-0.5 text-xs font-semibold">
+            {result.totalMatches}/{total}
           </span>
         </div>
-        <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
-          {result.totalMatches}/{total}
-        </span>
+        <p className="font-semibold text-base">
+          {result.recordType === "draw" ? "Sorteo" : "Apuesta"} · {formatDateLong(result.date, dateFormat)}
+        </p>
       </div>
-      <div className="mt-3 flex flex-wrap gap-1.5">
+      <div className="mt-3 flex flex-wrap gap-1.5 **:data-slot-badge:size-10">
         {result.numbers.map((n) => (
           <NumberBadge key={n} value={n} variant={matchSet.has(n) ? "match" : "muted"} />
         ))}
       </div>
-      <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+      <p className="mt-3 text-xs text-foreground/80">
         {result.percentage}% de aciertos · diferencia de suma {result.sumDifference > 0 ? "+" : ""}
         {result.sumDifference}
       </p>

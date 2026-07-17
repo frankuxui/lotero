@@ -8,6 +8,7 @@ export function buildBetFormSchema(config: GameConfig) {
 
   return z.object({
     label: z.string().trim().optional(),
+    createdAt: z.string().min(1, "La fecha de creación es obligatoria"),
     lines: z
       .array(
         z.object({

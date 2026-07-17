@@ -1,6 +1,5 @@
 import { Copy, Eye, GitCompare, Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { formatCombination } from "@/lib/formatters/number";
 import type { Bet } from "@/types/bet";
 
@@ -10,29 +9,33 @@ export function BetActions({ bet, onDuplicate, onDeleteRequest, isDuplicating }:
 
   return (
     <div className="w-full flex items-center justify-between gap-1">
-      <Button asChild variant="ghost" size="rounded" aria-label="Ver apuesta">
-        <Link to={`/bets/${bet.id}`}>
-          <Eye className="size-5!" />
-        </Link>
-      </Button>
-      <Button asChild variant="ghost" size="rounded" aria-label="Editar apuesta">
-        <Link to={`/bets/${bet.id}/edit`}>
-          <Pencil className="size-5!" />
-        </Link>
-      </Button>
+      <Link to={`/bets/${bet.id}`} className="inline-flex items-center justify-center rounded-full size-10 transition-all duration-300 flex-none hover:bg-foreground/5">
+        <Eye className="size-5" />
+      </Link>
+
+      <Link to={`/bets/${bet.id}/edit`} className="inline-flex items-center justify-center rounded-full size-10 transition-all duration-300 flex-none hover:bg-foreground/5">
+        <Pencil className="size-5" />
+      </Link>
       {compareHref && (
-        <Button asChild variant="ghost" size="rounded" aria-label="Comparar primera línea">
-          <Link to={compareHref}>
-            <GitCompare className="size-5!" />
-          </Link>
-        </Button>
+        <Link to={compareHref} className="inline-flex items-center justify-center rounded-full size-10 transition-all duration-300 flex-none hover:bg-foreground/5">
+          <GitCompare className="size-5" />
+        </Link>
       )}
-      <Button variant="ghost" size="rounded" aria-label="Duplicar apuesta" onClick={onDuplicate} disabled={isDuplicating}>
-        <Copy className="size-5!" />
-      </Button>
-      <Button variant="ghost" size="rounded" aria-label="Eliminar apuesta" onClick={onDeleteRequest}>
-        <Trash2 className="size-5!" />
-      </Button>
+      <button
+        aria-label="Duplicar apuesta"
+        onClick={onDuplicate}
+        disabled={isDuplicating}
+        className="inline-flex items-center justify-center rounded-full size-10 transition-all duration-300 flex-none hover:bg-foreground/5"
+      >
+        <Copy className="size-5" />
+      </button>
+      <button
+        aria-label="Eliminar apuesta"
+        onClick={onDeleteRequest}
+        className="inline-flex items-center justify-center rounded-full size-10 transition-all duration-300 flex-none hover:bg-foreground/5"
+      >
+        <Trash2 className="size-5" />
+      </button>
     </div>
   );
 }

@@ -1,16 +1,27 @@
 import { useEffect, useMemo } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
 import { ExtraFieldControl } from "@/components/shared/number-selector/ExtraFieldControl";
 import { NumberCombinationField } from "@/components/shared/number-selector/NumberCombinationField";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { buildDrawFormSchema, type DrawFormValues } from "@/features/draws/schemas/draw-form.schema";
+import { useFormDraftPersistence } from "@/hooks/useFormDraftPersistence";
 import type { ApiError } from "@/lib/api/client";
+import { readValidFormDraft } from "@/lib/storage/formDraft";
 import { defaultExtrasFor } from "@/lib/validation/game-rules";
 import type { CreateDrawInput } from "@/types/draw";
 import type { GameConfig } from "@/types/game";
+
+// Schema "de forma" (no el de negocio) para un borrador leído de sessionStorage: ver el
+// mismo patrón y motivo en BetForm.tsx.
+const drawDraftShapeSchema = z.object({
+  drawDate: z.string(),
+  numbers: z.array(z.number()),
+  extras: z.record(z.string(), z.unknown()),
+});
 
 export function DrawForm({
   config,
@@ -19,6 +30,7 @@ export function DrawForm({
   isSubmitting,
   submitLabel,
   serverError,
+  draftKey,
 }: {
   config: GameConfig;
   defaultValues?: DrawFormValues;
@@ -26,13 +38,24 @@ export function DrawForm({
   isSubmitting: boolean;
   submitLabel: string;
   serverError?: ApiError | null;
+  /** Clave única (incluye modo nuevo/edición y, en edición, el id del sorteo) para persistir
+   * un borrador en sessionStorage. Ver `lib/storage/formDraft.ts`. */
+  draftKey: string;
 }) {
   const schema = useMemo(() => buildDrawFormSchema(config), [config]);
 
+  const initialValues = useMemo<DrawFormValues>(() => {
+    const draft = readValidFormDraft(draftKey, drawDraftShapeSchema);
+    return draft ?? defaultValues ?? { drawDate: "", numbers: [], extras: defaultExtrasFor(config) };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo debe calcularse en el montaje.
+  }, []);
+
   const { control, register, handleSubmit, formState, setError } = useForm<DrawFormValues>({
     resolver: zodResolver(schema),
-    defaultValues: defaultValues ?? { drawDate: "", numbers: [], extras: defaultExtrasFor(config) },
+    defaultValues: initialValues,
   });
+
+  useFormDraftPersistence({ storageKey: draftKey, control });
 
   useEffect(() => {
     if (!serverError) return;

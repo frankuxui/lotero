@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import * as React from "react";
 
 function Card({ className, size = "default", ...props }: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
-  return <div data-slot="card" data-size={size} className={cn("w-full rounded-lg bg-background p-6 text-foreground", className)} {...props} />;
+  return <div data-slot="card" data-size={size} className={cn("w-full rounded-2xl bg-card p-6 text-foreground", className)} {...props} />;
 }
 
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {

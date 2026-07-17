@@ -40,13 +40,13 @@ function findSlotError(slots: string[], min: number, max: number): { index: numb
     if (current < min || current > max) {
       return {
         index,
-        message: `${formatLotteryNumber(current)} debe estar entre ${formatLotteryNumber(min)} y ${formatLotteryNumber(max)}`,
+        message: `${formatLotteryNumber(current)} debe estar entre ${formatLotteryNumber(min)} y ${formatLotteryNumber(max)}`
       };
     }
     if (previous && current <= previous.value) {
       return {
         index,
-        message: `${formatLotteryNumber(current)} debe ser mayor que ${formatLotteryNumber(previous.value)} (casilla ${previous.index + 1})`,
+        message: `${formatLotteryNumber(current)} debe ser mayor que ${formatLotteryNumber(previous.value)} (casilla ${previous.index + 1})`
       };
     }
     previous = { index, value: current };
@@ -63,7 +63,7 @@ export function NumberSlotsInput({
   onBlur,
   id,
   invalid,
-  disabled,
+  disabled
 }: {
   count: number;
   min: number;
@@ -158,13 +158,8 @@ export function NumberSlotsInput({
   };
 
   return (
-    <div>
-      <div
-        role="group"
-        aria-invalid={invalid || Boolean(slotError) || undefined}
-        className="flex flex-wrap gap-2"
-        onBlur={handleGroupBlur}
-      >
+    <div className="flex-1 w-full">
+      <div role="group" aria-invalid={invalid || Boolean(slotError) || undefined} className="flex flex-wrap gap-2" data-input-group onBlur={handleGroupBlur}>
         {Array.from({ length: count }, (_, index) => (
           <input
             key={index}
@@ -183,12 +178,13 @@ export function NumberSlotsInput({
             onKeyDown={(event) => handleKeyDown(index, event)}
             onPaste={(event) => handlePaste(index, event)}
             onFocus={(event) => event.target.select()}
+            data-input-slot
             className={cn(
               "h-12 w-12 rounded-md border border-slate-300 bg-white text-center text-lg font-semibold tabular-nums text-slate-900 transition-colors",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:border-indigo-600",
               "disabled:cursor-not-allowed disabled:opacity-50",
               "dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100",
-              (invalid || slotError?.index === index) && "border-red-500 focus-visible:ring-red-600",
+              (invalid || slotError?.index === index) && "border-red-500 focus-visible:ring-red-600"
             )}
           />
         ))}

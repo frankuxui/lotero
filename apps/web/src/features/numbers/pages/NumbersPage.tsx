@@ -48,10 +48,10 @@ export default function NumbersPage() {
   };
 
   return (
-    <>
+    <div className="w-full mx-auto max-w-full sm:max-w-xl">
       <PageHeader title="Buscador de números" description="Elige un número para ver sus apariciones y estadísticas." />
 
-      <div className="mb-6 flex flex-col md:flex-row gap-4 sm:max-w-xl">
+      <div className="w-full max-w-full mb-6 flex flex-col md:flex-row gap-4">
         <div className="flex flex-1 flex-col gap-4">
           <Label htmlFor="numbers-game">Juego (opcional)</Label>
           <GameSelector id="numbers-game" games={games} value={game} onChange={setGame} allowAll allowAllLabel="Cualquier juego" />
@@ -61,6 +61,7 @@ export default function NumbersPage() {
           <Input
             id="numbers-input"
             type="number"
+            placeholder="Ingrese un número"
             min={min}
             max={max}
             value={selected[0] !== undefined ? formatLotteryNumber(selected[0]) : ""}
@@ -72,13 +73,13 @@ export default function NumbersPage() {
         </div>
       </div>
 
-      <NumberGrid min={min} max={max} mode="single" value={selected} onChange={setSelected} aria-label="Selector de número a buscar" className="max-w-xl" />
+      <NumberGrid min={min} max={max} mode="single" value={selected} onChange={setSelected} aria-label="Selector de número a buscar" />
 
       <div className="mt-6">
-        <Button onClick={handleSearch} disabled={selected.length === 0}>
+        <Button size="lg" onClick={handleSearch} disabled={selected.length === 0}>
           Buscar número {selected[0] !== undefined ? formatLotteryNumber(selected[0]) : ""}
         </Button>
       </div>
-    </>
+    </div>
   );
 }

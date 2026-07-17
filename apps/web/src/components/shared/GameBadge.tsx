@@ -4,12 +4,12 @@ const PALETTE = ["indigo", "emerald", "amber", "rose", "sky", "violet", "blue"] 
 
 const COLOR_CLASSES: Record<(typeof PALETTE)[number], string> = {
   indigo: "bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300",
-  emerald: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300",
+  emerald: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/30 dark:text-emerald-400",
   amber: "bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300",
   rose: "bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300",
   sky: "bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300",
   violet: "bg-violet-100 text-violet-700 dark:bg-violet-950/60 dark:text-violet-300",
-  blue: "bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300"
+  blue: "bg-blue-200 text-blue-700 dark:bg-blue-500/30 dark:text-blue-500"
 };
 
 /** Colores fijos para los juegos activos; el resto cae al hash genérico. */
@@ -29,5 +29,5 @@ function colorForGame(id: string): (typeof PALETTE)[number] {
 }
 
 export function GameBadge({ game, label, className }: { game: string; label?: string; className?: string }) {
-  return <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium", COLOR_CLASSES[colorForGame(game)], className)}>{label ?? game}</span>;
+  return <span className={cn("inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold", COLOR_CLASSES[colorForGame(game)], className)}>{label ?? game}</span>;
 }

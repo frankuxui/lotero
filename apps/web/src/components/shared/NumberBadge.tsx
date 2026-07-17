@@ -14,14 +14,15 @@ export function NumberBadge({
 }) {
   return (
     <span
+      data-slot-badge
       className={cn(
-        "inline-flex items-center justify-center rounded-full font-semibold tabular-nums",
+        "inline-flex flex-none items-center justify-center rounded-full font-semibold tabular-nums",
         size === "sm" && "size-6 text-xs",
         size === "md" && "size-8 text-sm",
-        size === "lg" && "size-10 text-base",
+        size === "lg" && "size-9 text-sm",
         variant === "default" && "bg-foreground/10",
-        variant === "match" && "bg-emerald-600 text-white",
-        variant === "muted" && "bg-slate-50 text-slate-400 dark:bg-slate-900 dark:text-slate-600",
+        variant === "match" && "bg-green-700 text-white",
+        variant === "muted" && "bg-foreground/10",
         variant === "extra" && "bg-yellow-500 text-white",
         className
       )}

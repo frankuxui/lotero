@@ -19,11 +19,22 @@ function buildConditions(query: DateRangeQuery) {
   return conditions;
 }
 
+/**
+ * Combina una fecha elegida por el usuario (AAAA-MM-DD, para registrar apuestas pasadas) con la
+ * hora actual, para conservar un timestamp ISO completo comparable lexicográficamente con
+ * bets.createdAt (usado en orderBy y en los filtros dateFrom/dateTo de buildConditions).
+ */
+function combineDateWithCurrentTime(dateOnly: string): string {
+  const timePart = new Date().toISOString().slice(11);
+  return `${dateOnly}T${timePart}`;
+}
+
 export class BetRepository {
   constructor(private readonly db: Database) {}
 
   async create(input: CreateBetInput): Promise<Bet> {
     const now = new Date().toISOString();
+    const createdAt = input.createdAt ? combineDateWithCurrentTime(input.createdAt) : now;
     const betId = createId();
 
     return this.db.transaction(async (tx) => {
@@ -31,7 +42,7 @@ export class BetRepository {
         id: betId,
         game: input.game,
         label: input.label ?? null,
-        createdAt: now,
+        createdAt,
         updatedAt: now,
       });
 
@@ -40,7 +51,7 @@ export class BetRepository {
         betId,
         numbers: line.numbers,
         extras: line.extras,
-        createdAt: now,
+        createdAt,
       }));
 
       await tx.insert(betLines).values(lineRows);
@@ -50,7 +61,7 @@ export class BetRepository {
         game: input.game,
         label: input.label ?? null,
         lines: lineRows.map((line) => ({ id: line.id, numbers: line.numbers, extras: line.extras })),
-        createdAt: now,
+        createdAt,
         updatedAt: now,
       };
     });
@@ -137,6 +148,7 @@ export class BetRepository {
     if (!existing) return undefined;
 
     const now = new Date().toISOString();
+    const createdAt = input.createdAt ? combineDateWithCurrentTime(input.createdAt) : existing.createdAt;
 
     return this.db.transaction(async (tx) => {
       await tx
@@ -144,6 +156,7 @@ export class BetRepository {
         .set({
           game: input.game ?? existing.game,
           label: input.label ?? existing.label,
+          createdAt,
           updatedAt: now,
         })
         .where(eq(bets.id, id));
@@ -155,7 +168,7 @@ export class BetRepository {
           betId: id,
           numbers: line.numbers,
           extras: line.extras,
-          createdAt: now,
+          createdAt,
         }));
         await tx.insert(betLines).values(lineRows);
       }

@@ -11,6 +11,7 @@ import { useCreateBet, useUpdateBet } from "@/features/bets/hooks/useBetMutation
 import { useGames } from "@/hooks/useGames";
 import { ApiError } from "@/lib/api/client";
 import { findGameConfig } from "@/lib/games";
+import { clearFormDraft } from "@/lib/storage/formDraft";
 import { useSettingsStore } from "@/store/settingsStore";
 import { toast } from "@/store/toastStore";
 
@@ -38,9 +39,7 @@ export default function BetFormPage() {
 
   const games = useMemo(() => gamesQuery.data ?? [], [gamesQuery.data]);
 
-  const initialGame = isEdit
-    ? betQuery.data?.game
-    : (defaultGameSetting && findGameConfig(games, defaultGameSetting) ? defaultGameSetting : games[0]?.id);
+  const initialGame = isEdit ? betQuery.data?.game : defaultGameSetting && findGameConfig(games, defaultGameSetting) ? defaultGameSetting : games[0]?.id;
   const selectedGame = gameOverride ?? initialGame;
 
   const isPending = gamesQuery.isPending || (isEdit && betQuery.isPending);
@@ -51,7 +50,8 @@ export default function BetFormPage() {
     if (!isEdit || !betQuery.data || !config) return undefined;
     return {
       label: betQuery.data.label ?? "",
-      lines: betQuery.data.lines.map((line) => ({ numbers: line.numbers, extras: line.extras })),
+      createdAt: betQuery.data.createdAt.slice(0, 10),
+      lines: betQuery.data.lines.map((line) => ({ numbers: line.numbers, extras: line.extras }))
     };
   }, [isEdit, betQuery.data, config]);
 
@@ -66,6 +66,9 @@ export default function BetFormPage() {
   const displayName = liveLabel.trim();
   const fallbackTitle = isEdit ? "Editar apuesta" : "Nueva apuesta";
   const breadcrumbs = [{ label: "Mis apuestas", to: "/bets" }, { label: displayName || fallbackTitle }];
+  // Incluye el juego en creación (no hay id todavía) y el id en edición, para no mezclar el
+  // borrador de una apuesta con el de otra ni con el de un juego distinto.
+  const draftKey = isEdit ? `bet:edit:${id}` : `bet:new:${config?.id ?? "unknown"}`;
 
   if (isPending) {
     return (
@@ -91,9 +94,10 @@ export default function BetFormPage() {
     );
   }
 
-  const handleSubmit = (payload: { label?: string; lines: { numbers: number[]; extras: Record<string, unknown> }[] }) => {
+  const handleSubmit = (payload: { label?: string; createdAt?: string; lines: { numbers: number[]; extras: Record<string, unknown> }[] }) => {
     setSubmitError(null);
     const onSuccess = (bet: { id: string }) => {
+      clearFormDraft(draftKey);
       toast({ title: isEdit ? "Apuesta actualizada" : "Apuesta creada", variant: "success" });
       navigate(`/bets/${bet.id}`);
     };
@@ -109,7 +113,7 @@ export default function BetFormPage() {
   };
 
   return (
-    <>
+    <div className="w-full mx-auto max-w-full sm:max-w-3xl">
       <PageHeader title={displayName || fallbackTitle} breadcrumbs={breadcrumbs} />
       <div className="mb-6 flex flex-col gap-1.5 sm:max-w-xs">
         <Label htmlFor="bet-game">Juego</Label>
@@ -124,7 +128,8 @@ export default function BetFormPage() {
         submitLabel={isEdit ? "Guardar cambios" : "Crear apuesta"}
         serverError={submitError}
         onLabelChange={setLiveLabel}
+        draftKey={draftKey}
       />
-    </>
+    </div>
   );
 }

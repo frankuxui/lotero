@@ -14,7 +14,7 @@ export function CompareForm({
   config,
   defaultValues,
   onSubmit,
-  isSubmitting,
+  isSubmitting
 }: {
   config: GameConfig;
   defaultValues?: Partial<CompareFormValues>;
@@ -31,8 +31,8 @@ export function CompareForm({
       dateFrom: "",
       dateTo: "",
       minMatches: undefined,
-      ...defaultValues,
-    },
+      ...defaultValues
+    }
   });
 
   const submit = handleSubmit(onSubmit);
@@ -43,15 +43,9 @@ export function CompareForm({
         control={control}
         name="numbers"
         render={({ field, fieldState }) => (
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-4">
             <Label>Combinación a comparar</Label>
-            <NumberCombinationField
-              config={config}
-              value={field.value}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-              invalid={Boolean(fieldState.error)}
-            />
+            <NumberCombinationField config={config} value={field.value} onChange={field.onChange} onBlur={field.onBlur} invalid={Boolean(fieldState.error)} />
             {fieldState.error && <p className="text-xs text-red-600 dark:text-red-400">{fieldState.error.message}</p>}
           </div>
         )}
@@ -63,36 +57,28 @@ export function CompareForm({
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-4">
           <Label htmlFor="compare-source">Comparar contra</Label>
           <Select id="compare-source" {...register("source")}>
             <option value="draws">Sorteos</option>
             <option value="bets">Apuestas</option>
           </Select>
         </div>
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-4">
           <Label htmlFor="compare-from">Desde</Label>
           <Input id="compare-from" type="date" {...register("dateFrom")} />
         </div>
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-4">
           <Label htmlFor="compare-to">Hasta</Label>
           <Input id="compare-to" type="date" {...register("dateTo")} />
         </div>
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-4">
           <Label htmlFor="compare-min">Coincidencias mínimas</Label>
-          <Input
-            id="compare-min"
-            type="number"
-            min={0}
-            max={config.numbers.count}
-            {...register("minMatches", { setValueAs: (value) => (value === "" ? undefined : Number(value)) })}
-          />
+          <Input id="compare-min" type="number" min={0} max={config.numbers.count} {...register("minMatches", { setValueAs: (value) => (value === "" ? undefined : Number(value)) })} />
         </div>
       </div>
 
-      {formState.errors.numbers && (
-        <p className="text-xs text-red-600 dark:text-red-400">{formState.errors.numbers.message}</p>
-      )}
+      {formState.errors.numbers && <p className="text-xs text-red-600 dark:text-red-400">{formState.errors.numbers.message}</p>}
 
       <div className="flex justify-end">
         <Button type="submit" disabled={isSubmitting}>

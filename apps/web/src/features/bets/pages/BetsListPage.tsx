@@ -124,20 +124,22 @@ export default function BetsListPage() {
         }
       />
 
-      <FilterBar>
-        <div className="grid w-full gap-4">
-          <Label htmlFor="bets-filter-game">Juego</Label>
-          <GameSelector id="bets-filter-game" games={games} value={game} onChange={(value) => setParam("game", value)} allowAll />
-        </div>
-        <div className="grid w-full gap-4">
-          <Label htmlFor="bets-filter-from">Desde</Label>
-          <Input id="bets-filter-from" type="date" value={dateFrom} max={dateTo || undefined} onChange={(event) => setParam("dateFrom", event.target.value)} />
-        </div>
-        <div className="grid w-full gap-4">
-          <Label htmlFor="bets-filter-to">Hasta</Label>
-          <Input id="bets-filter-to" type="date" value={dateTo} min={dateFrom || undefined} onChange={(event) => setParam("dateTo", event.target.value)} />
-        </div>
-      </FilterBar>
+      <div className="mt-8 w-full">
+        <FilterBar>
+          <div className="grid w-full gap-4">
+            <Label htmlFor="bets-filter-game">Juego</Label>
+            <GameSelector id="bets-filter-game" games={games} value={game} onChange={(value) => setParam("game", value)} allowAll />
+          </div>
+          <div className="grid w-full gap-4">
+            <Label htmlFor="bets-filter-from">Desde</Label>
+            <Input id="bets-filter-from" type="date" value={dateFrom} max={dateTo || undefined} onChange={(event) => setParam("dateFrom", event.target.value)} />
+          </div>
+          <div className="grid w-full gap-4">
+            <Label htmlFor="bets-filter-to">Hasta</Label>
+            <Input id="bets-filter-to" type="date" value={dateTo} min={dateFrom || undefined} onChange={(event) => setParam("dateTo", event.target.value)} />
+          </div>
+        </FilterBar>
+      </div>
 
       {betsQuery.isPending && <SkeletonCard count={itemsPerPage} />}
 
@@ -158,7 +160,7 @@ export default function BetsListPage() {
       {betsQuery.data && betsQuery.data.items.length > 0 && (
         <>
           {useTable ? (
-            <div className="hidden md:block bg-background rounded-2xl overflow-hidden border border-border">
+            <div className="hidden md:block bg-card rounded-2xl overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -185,7 +187,9 @@ export default function BetsListPage() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="inline-flex items-center justify-center w-6 h-6 text-xs font-medium rounded-full bg-indigo-500/20 text-indigo-500">{bet.lines.length}</span>
+                        <span className="inline-flex items-center justify-center size-7 text-xs font-medium rounded-full bg-emerald-500/30 text-emerald-500 dark:text-emerald-400">
+                          {bet.lines.length}
+                        </span>
                       </TableCell>
                       <TableCell>{formatTimestamp(bet.createdAt)}</TableCell>
                       <TableCell className="text-right">
