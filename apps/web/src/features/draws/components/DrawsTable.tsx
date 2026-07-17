@@ -37,6 +37,8 @@ function matchesNumberQuery(numbers: number[], query: string): boolean {
 }
 
 export function DrawsTable({ draws, games, dateFormat, onDeleteRequest }: { draws: Draw[]; games: GameConfig[]; dateFormat: DateFormatPreference; onDeleteRequest: (draw: Draw) => void }) {
+  "use no memo";
+
   const [sorting, setSorting] = useState<SortingState>([{ id: "drawDate", desc: true }]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -86,6 +88,7 @@ export function DrawsTable({ draws, games, dateFormat, onDeleteRequest }: { draw
     [games, dateFormat, onDeleteRequest]
   );
 
+  // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Table expone funciones no memoizables; este componente está marcado con "use no memo".
   const table = useReactTable({
     data: draws,
     columns,
@@ -107,11 +110,18 @@ export function DrawsTable({ draws, games, dateFormat, onDeleteRequest }: { draw
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="relative sm:max-w-xs">
-        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" aria-hidden="true" />
-        <Input value={globalFilter} onChange={(event) => setGlobalFilter(event.target.value)} placeholder="Buscar número, juego o fecha…" className="pl-9" aria-label="Buscador global de sorteos" />
+      <div className="p-6 w-full">
+        <div className="relative w-full sm:max-w-sm">
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" aria-hidden="true" />
+          <Input
+            value={globalFilter}
+            onChange={(event) => setGlobalFilter(event.target.value)}
+            placeholder="Buscar número, juego o fecha…"
+            className="w-full pl-9"
+            aria-label="Buscador global de sorteos"
+          />
+        </div>
       </div>
-
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -178,8 +188,8 @@ export function DrawsTable({ draws, games, dateFormat, onDeleteRequest }: { draw
         </TableFooter>
       </Table>
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-6">
+        <div className="flex items-center gap-2 flex-1">
           <Label htmlFor="draws-page-size" className="text-xs">
             Filas por página
           </Label>
@@ -192,7 +202,7 @@ export function DrawsTable({ draws, games, dateFormat, onDeleteRequest }: { draw
           </Select>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-slate-500 dark:text-slate-400">
+          <span className="text-sm ">
             Página {table.getState().pagination.pageIndex + 1} de {Math.max(1, table.getPageCount())}
           </span>
           <Button type="button" variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()} aria-label="Página anterior">

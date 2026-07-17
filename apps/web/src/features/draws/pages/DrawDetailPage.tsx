@@ -3,13 +3,17 @@ import { GitCompare, Pencil, Trash2 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { BackButton } from "@/components/shared/BackButton";
 import { ConfirmActionDialog } from "@/components/shared/ConfirmActionDialog";
+import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { GameBadge } from "@/components/shared/GameBadge";
 import { LoadingState } from "@/components/shared/LoadingState";
 import { NumberBadge } from "@/components/shared/NumberBadge";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { SectionHeader } from "@/components/shared/SectionHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ComparisonResultCard } from "@/features/comparison/components/ComparisonResultCard";
+import { useComparisonResult } from "@/features/comparison/hooks/useComparisonResult";
 import { useDraw } from "@/features/draws/hooks/useDraw";
 import { useDeleteDraw } from "@/features/draws/hooks/useDrawMutations";
 import { useGames } from "@/hooks/useGames";
@@ -32,6 +36,17 @@ export default function DrawDetailPage() {
   const games = gamesQuery.data ?? [];
   const isPending = drawQuery.isPending || gamesQuery.isPending;
   const isError = drawQuery.isError || gamesQuery.isError;
+
+  const matchesQuery = useComparisonResult(
+    {
+      game: drawQuery.data?.game ?? "",
+      numbers: drawQuery.data?.numbers ?? [],
+      extras: drawQuery.data?.extras ?? {},
+      source: "bets",
+      minMatches: 1
+    },
+    { enabled: Boolean(drawQuery.data) }
+  );
 
   const breadcrumbs = [{ label: "Sorteos", to: "/draws" }, { label: "Detalle" }];
 
@@ -56,6 +71,7 @@ export default function DrawDetailPage() {
   const draw = drawQuery.data;
   const config = findGameConfig(games, draw.game);
   const compareHref = `/compare?game=${encodeURIComponent(draw.game)}&numbers=${encodeURIComponent(formatCombination(draw.numbers))}`;
+  const topMatches = (matchesQuery.data?.results ?? []).slice(0, 3);
 
   const handleDelete = () => {
     deleteMutation.mutate(draw.id, {
@@ -132,6 +148,26 @@ export default function DrawDetailPage() {
           )}
         </CardContent>
       </Card>
+
+      <div className="mt-8">
+        <SectionHeader title="Tus apuestas más cercanas" description="Líneas de tus apuestas que comparten al menos un número con este sorteo." />
+
+        {matchesQuery.isPending && <LoadingState />}
+
+        {matchesQuery.isError && <ErrorState message="No se pudieron cargar tus apuestas." onRetry={() => void matchesQuery.refetch()} />}
+
+        {matchesQuery.isSuccess && topMatches.length === 0 && (
+          <EmptyState title="Sin coincidencias todavía" description="Ninguna de tus apuestas comparte números con este sorteo." />
+        )}
+
+        {matchesQuery.isSuccess && topMatches.length > 0 && (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {topMatches.map((match) => (
+              <ComparisonResultCard key={match.recordId} result={match} gameLabel={gameLabel(games, match.game)} to={match.betId ? `/bets/${match.betId}` : undefined} />
+            ))}
+          </div>
+        )}
+      </div>
 
       <div className="mt-6">
         <BackButton fallback="/draws" />

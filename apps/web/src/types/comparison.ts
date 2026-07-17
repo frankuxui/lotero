@@ -15,6 +15,7 @@ export type ComparisonRecordType = "draw" | "bet-line";
 export interface ComparisonResult {
   recordId: string;
   recordType: ComparisonRecordType;
+  betId?: string;
   game: string;
   date: string;
   numbers: number[];

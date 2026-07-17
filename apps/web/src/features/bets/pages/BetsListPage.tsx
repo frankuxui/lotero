@@ -10,7 +10,7 @@ import { NumberBadge } from "@/components/shared/NumberBadge";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Pagination } from "@/components/shared/Pagination";
 import { SkeletonCard } from "@/components/shared/SkeletonCard";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -24,6 +24,7 @@ import { findGameConfig, gameLabel } from "@/lib/games";
 import { useSettingsStore } from "@/store/settingsStore";
 import { toast } from "@/store/toastStore";
 import type { Bet } from "@/types/bet";
+import { TextBulletListSquare16 } from "@/components/icons";
 
 export default function BetsListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -115,10 +116,11 @@ export default function BetsListPage() {
       <PageHeader
         title="Mis apuestas"
         description="Consulta y gestiona tus apuestas registradas."
+        icon={<TextBulletListSquare16 className="size-14" />}
         actions={
-          <Button asChild>
-            <Link to="/bets/new">Nueva apuesta</Link>
-          </Button>
+          <Link className={buttonVariants({ variant: "default" })} to="/bets/new">
+            Nueva apuesta
+          </Link>
         }
       />
 

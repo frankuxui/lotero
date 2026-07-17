@@ -6,6 +6,7 @@ import type { ComparisonRecordType, ComparisonRequest, ComparisonResponse, Compa
 interface Candidate {
   recordId: string;
   recordType: ComparisonRecordType;
+  betId?: string;
   game: string;
   date: string;
   numbers: number[];
@@ -47,6 +48,7 @@ export class ComparisonService {
         bet.lines.map((line) => ({
           recordId: line.id,
           recordType: "bet-line" as const,
+          betId: bet.id,
           game: bet.game,
           date: bet.createdAt,
           numbers: line.numbers,
@@ -88,6 +90,7 @@ export class ComparisonService {
     return {
       recordId: candidate.recordId,
       recordType: candidate.recordType,
+      ...(candidate.betId !== undefined && { betId: candidate.betId }),
       game: candidate.game,
       date: candidate.date,
       numbers: candidate.numbers,

@@ -1,4 +1,4 @@
-import { Hash, GitCompare, PlusCircle, Ticket, Boxes, PackageCheck } from "lucide-react";
+import { Ticket, Boxes, PackageCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
@@ -18,12 +18,13 @@ import { TodaySuggestionCard } from "@/features/suggestions/components/TodaySugg
 import { useTodaySuggestions } from "@/features/suggestions/hooks/useTodaySuggestions";
 import { findGameConfig, gameLabel } from "@/lib/games";
 import { useGames } from "@/hooks/useGames";
+import { AddCircle16, CalendarCheckmark16, Home16, Org48, SearchSparkle16 } from "@/components/icons";
 
 const QUICK_ACTIONS = [
-  { to: "/bets/new", label: "Nueva apuesta", icon: PlusCircle },
-  { to: "/draws/new", label: "Nuevo sorteo", icon: Ticket },
-  { to: "/compare", label: "Comparar combinación", icon: GitCompare },
-  { to: "/numbers", label: "Buscar número", icon: Hash }
+  { to: "/bets/new", label: "Nueva apuesta", icon: AddCircle16 },
+  { to: "/draws/new", label: "Nuevo sorteo", icon: CalendarCheckmark16 },
+  { to: "/compare", label: "Comparar combinación", icon: Org48 },
+  { to: "/numbers", label: "Buscar número", icon: SearchSparkle16 }
 ];
 
 export default function DashboardPage() {
@@ -37,11 +38,11 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col mx-auto w-full max-w-5xl">
-      <PageHeader title="Inicio" description="Resumen de tu actividad en Lotero." />
+      <PageHeader title="Inicio" description="Resumen de tu actividad en Lotero." icon={<Home16 className="size-14" />} />
 
       <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {QUICK_ACTIONS.map((action) => (
-          <Button key={action.to} asChild variant="outline" className="h-auto flex-col py-3 px-6 min-h-22 rounded-xl border-0 bg-foreground/4 hover:bg-foreground/10">
+          <Button key={action.to} asChild variant="outline" className="h-auto flex-col gap-1 py-3 px-6 min-h-22 rounded-xl border-0 bg-foreground/4 hover:bg-foreground/10">
             <Link to={action.to}>
               <action.icon className="size-7" aria-hidden="true" />
               <span className="text-sm font-medium">{action.label}</span>
@@ -192,15 +193,15 @@ export default function DashboardPage() {
               <div className="grid gap-3 sm:grid-cols-2 mt-8">
                 {dashboardQuery.data.numbersByGame.map((entry) => (
                   <Card key={entry.game}>
-                    <CardContent className="pt-4">
+                    <CardContent className="w-full">
                       <GameBadge game={entry.game} label={gameLabel(games, entry.game)} />
-                      <p className="mt-3 mb-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">Calientes</p>
+                      <p className="mt-3 mb-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">🔥 Calientes</p>
                       <div className="flex flex-wrap gap-1.5">
                         {entry.hot.map((item) => (
                           <NumberBadge key={item.number} value={item.number} variant="match" size="sm" />
                         ))}
                       </div>
-                      <p className="mt-3 mb-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">Fríos</p>
+                      <p className="mt-3 mb-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">🧊 Fríos</p>
                       <div className="flex flex-wrap gap-1.5">
                         {entry.cold.map((item) => (
                           <NumberBadge key={item.number} value={item.number} variant="muted" size="sm" />

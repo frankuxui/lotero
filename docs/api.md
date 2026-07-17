@@ -38,7 +38,7 @@ Zod produce 400, juego o recurso inexistente produce 404 y los errores no contro
 | `GET /api/bets/:id` | `id` | Apuesta con líneas; detalle y edición | 404 |
 | `PATCH /api/bets/:id` | Campos parciales | Apuesta actualizada | 400, 404 |
 | `DELETE /api/bets/:id` | `id` | 204; lista y detalle | 404 |
-| `POST /api/comparison` | `game,numbers,source,dateFrom?,dateTo?,minMatches?,extras?` | Ranking; comparador y dashboard | 400, 404 |
+| `POST /api/comparison` | `game,numbers,source,dateFrom?,dateTo?,minMatches?,extras?` | Ranking; comparador, dashboard y resumen de apuestas en detalle de sorteo | 400, 404 |
 | `GET /api/statistics` | `game,dateFrom?,dateTo?` | Estadísticas | 400, 404 |
 | `GET /api/numbers/:number` | Entero; `game?` | Detalle de número | 400, 404 |
 | `GET /api/dashboard` | — | Resumen agregado | 500 |

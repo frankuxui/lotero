@@ -7,7 +7,7 @@ import { FilterBar } from "@/components/shared/FilterBar";
 import { GameSelector } from "@/components/shared/GameSelector";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { SkeletonCard } from "@/components/shared/SkeletonCard";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DrawActions } from "@/features/draws/components/DrawActions";
@@ -20,6 +20,7 @@ import { findGameConfig, gameLabel } from "@/lib/games";
 import { useSettingsStore } from "@/store/settingsStore";
 import { toast } from "@/store/toastStore";
 import type { Draw } from "@/types/draw";
+import { CircleMultipleHintCheckmark16 } from "@/components/icons";
 
 // La paginación y el filtrado por columnas de la tabla de escritorio pasan a ser
 // client-side (TanStack Table) sobre este lote; el máximo permitido por la API basta
@@ -83,14 +84,15 @@ export default function DrawsListPage() {
   };
 
   return (
-    <>
+    <div className="w-full mx-auto max-w-6xl">
       <PageHeader
         title="Sorteos"
-        description="Consulta y gestiona los sorteos oficiales registrados."
+        description="Gestiona los sorteos oficiales registrados."
+        icon={<CircleMultipleHintCheckmark16 className="size-14" />}
         actions={
-          <Button asChild>
-            <Link to="/draws/new">Nuevo sorteo</Link>
-          </Button>
+          <Link className={buttonVariants({ variant: "default" })} to="/draws/new">
+            Nuevo sorteo
+          </Link>
         }
       />
 
@@ -128,12 +130,12 @@ export default function DrawsListPage() {
       {drawsQuery.data && drawsQuery.data.items.length > 0 && (
         <>
           {!showCardsOnly && (
-            <div className="hidden md:block">
+            <div className="hidden lg:block bg-background rounded-2xl overflow-hidden border border-border mt-8">
               <DrawsTable draws={drawsQuery.data.items} games={games} dateFormat={dateFormat} onDeleteRequest={requestDelete} />
             </div>
           )}
 
-          <div className={showCardsOnly ? "grid gap-3 sm:grid-cols-2" : "grid gap-3 md:hidden"}>
+          <div className={showCardsOnly ? "grid gap-3 sm:grid-cols-2" : "grid gap-3 lg:hidden"}>
             {drawsQuery.data.items.map((draw) => (
               <DrawCard
                 key={draw.id}
@@ -157,6 +159,6 @@ export default function DrawsListPage() {
         isConfirming={deleteMutation.isPending}
         onConfirm={handleDelete}
       />
-    </>
+    </div>
   );
 }

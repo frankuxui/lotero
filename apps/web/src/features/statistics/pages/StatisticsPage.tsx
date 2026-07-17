@@ -139,8 +139,8 @@ export default function StatisticsPage() {
             <SectionHeader title="Números calientes y fríos" />
             <div className="grid gap-3 sm:grid-cols-2">
               <Card>
-                <CardContent className="pt-4">
-                  <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Calientes</p>
+                <CardContent className="w-full">
+                  <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">🔥 Calientes</p>
                   <div className="flex flex-wrap gap-1.5">
                     {data.hot.map((item) => (
                       <NumberBadge key={item.number} value={item.number} variant="match" />
@@ -149,8 +149,8 @@ export default function StatisticsPage() {
                 </CardContent>
               </Card>
               <Card>
-                <CardContent className="pt-4">
-                  <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Fríos</p>
+                <CardContent className="w-full">
+                  <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">🧊 Fríos</p>
                   <div className="flex flex-wrap gap-1.5">
                     {data.cold.map((item) => (
                       <NumberBadge key={item.number} value={item.number} variant="muted" />
@@ -203,11 +203,7 @@ export default function StatisticsPage() {
                       {extra.top.length === 0 && <p className="text-sm text-slate-500 dark:text-slate-400">Sin datos.</p>}
                       {extra.top.map((item) => (
                         <div key={item.value} className="flex items-center justify-between">
-                          {extra.type === "number" ? (
-                            <NumberBadge value={item.value as number} size="sm" variant="extra" />
-                          ) : (
-                            <span className="text-sm font-medium tabular-nums">{item.value}</span>
-                          )}
+                          {extra.type === "number" ? <NumberBadge value={item.value as number} size="sm" variant="extra" /> : <span className="text-sm font-medium tabular-nums">{item.value}</span>}
                           <span className="text-sm text-slate-500 dark:text-slate-400">{item.count} veces</span>
                         </div>
                       ))}

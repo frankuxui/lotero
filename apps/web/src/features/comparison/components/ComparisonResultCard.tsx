@@ -39,7 +39,7 @@ export function ComparisonResultCard({ result, gameLabel, to }: { result: Compar
 
   return (
     <Card>
-      <CardContent className="pt-4">
+      <CardContent className="w-full">
         {to ? (
           <Link to={to} className="block rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600">
             {content}

@@ -8,17 +8,9 @@ export interface RecordTableColumn<T> {
   className?: string;
 }
 
-export function RecordTable<T>({
-  rows,
-  columns,
-  getRowKey,
-}: {
-  rows: T[];
-  columns: RecordTableColumn<T>[];
-  getRowKey: (row: T) => string;
-}) {
+export function RecordTable<T>({ rows, columns, getRowKey }: { rows: T[]; columns: RecordTableColumn<T>[]; getRowKey: (row: T) => string }) {
   return (
-    <Table>
+    <Table className="w-full ">
       <TableHeader>
         <TableRow>
           {columns.map((column) => (
