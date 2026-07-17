@@ -1,4 +1,4 @@
-import { BarChart3, CalendarDays, GitCompare, Hash, History, Home, Settings, Ticket, type LucideIcon } from "lucide-react";
+import { BarChart3, CalendarDays, GitCompare, Hash, History, Home, Lightbulb, Settings, Ticket, type LucideIcon } from "lucide-react";
 
 export interface NavItem {
   to: string;
@@ -17,6 +17,7 @@ export const primaryNavItems: NavItem[] = [
 
 export const secondaryNavItems: NavItem[] = [
   { to: "/history", label: "Historial", icon: History },
+  { to: "/suggestions", label: "Sugerencias", icon: Lightbulb },
   { to: "/numbers", label: "Buscador de números", icon: Hash },
   { to: "/settings", label: "Configuración", icon: Settings },
 ];

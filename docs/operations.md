@@ -59,24 +59,44 @@ No edites manualmente archivos de `migrations/meta` ni una migración ya aplicad
 
 La API se ejecuta en Docker para permanecer visible en la red local (móvil, portátiles); el frontend sigue en modo desarrollo (`npm run dev:web`) y no se dockeriza.
 
-```bash
-docker compose up -d --build api
-docker compose logs -f api
-docker compose down
-```
+`apps/api/Dockerfile` compila el workspace `@lotero/api` en dos etapas y `docker-compose.yml` (raíz) lo ejecuta con contexto en la raíz del monorepo. El contenedor requiere `apps/api/.env` (mismo archivo que usas en desarrollo); `docker-compose.yml` fija `HOST`, `PORT`, `NODE_ENV` y `DATABASE_URL`, y toma el resto (`CORS_ORIGIN`, `LOG_LEVEL`) de ese `.env`. El build copia `apps/api` desde tu working tree, no desde Git: los cambios sin commitear también entran en la imagen.
 
-Tras cada `git pull` que toque `apps/api`, reconstruye la imagen. Si la API sigue devolviendo la forma de datos anterior (el frontend rompe leyendo un campo `undefined`), Compose no recreó el contenedor con la imagen nueva; fuerza con `docker compose up -d --build --force-recreate api`.
+### Cada vez que cambies código de `apps/api`
 
-`apps/api/Dockerfile` compila el workspace `@lotero/api` en dos etapas y ejecuta `docker-compose.yml` (raíz) con contexto en la raíz del monorepo. El contenedor requiere `apps/api/.env` (mismo archivo que usas en desarrollo); `docker-compose.yml` fija `HOST`, `PORT`, `NODE_ENV` y `DATABASE_URL`, y toma el resto (`CORS_ORIGIN`, `LOG_LEVEL`) de ese `.env`.
+Sigue estos pasos en orden; no hay hot-reload dentro del contenedor.
+
+1. **Edita y guarda** el cambio en `apps/api/src` como de costumbre.
+2. **Si tocaste `apps/api/src/db/schema.ts`**, genera la migración en el host antes de tocar Docker (el contenedor solo aplica migraciones, no las genera):
+   ```bash
+   npm run db:generate -w apps/api
+   ```
+   Revisa el archivo nuevo en `apps/api/src/db/migrations/` antes de continuar.
+3. **Detén cualquier `npm run dev:api` / `npm run dev`** que esté corriendo en el host. El contenedor y el proceso local escriben sobre el mismo archivo `lotero.db`; no pueden correr los dos a la vez.
+4. **Reconstruye la imagen y recrea el contenedor** en un solo paso:
+   ```bash
+   docker compose up -d --build --force-recreate api
+   ```
+   Usa siempre `--force-recreate`: Compose a veces reconstruye la imagen pero no recrea el contenedor, y sigues viendo el código viejo.
+5. **Confirma el arranque** en los logs (debe verse la migración y el server escuchando):
+   ```bash
+   docker compose logs -f api
+   ```
+   Busca `Migraciones aplicadas correctamente.` y `API escuchando en http://0.0.0.0:4031`. `Ctrl+C` para salir del `-f` sin detener el contenedor.
+6. **Verifica el endpoint** antes de dar por bueno el cambio:
+   ```bash
+   curl http://localhost:4031/api/health
+   ```
+   Si expusiste un contrato nuevo (campo, endpoint), pruébalo también con `curl` o desde el frontend antes de continuar.
+7. Si algo falla, `docker compose logs api` (sin `-f`) para ver el stack trace completo, y `docker compose ps` para confirmar que el contenedor sigue `Up` y no en `Restarting`/`Exited`.
+
+Comando de referencia rápida para detener todo: `docker compose down`.
 
 **Una sola base de datos:** el volumen `./apps/api/data:/app/apps/api/data` monta el mismo directorio que usa el proceso en desarrollo, así que Docker lee y escribe el mismo archivo `lotero.db`; no se crea una base separada y no se pierden los datos existentes. El contenedor aplica migraciones en cada arranque (`node dist/db/migrate.js`, idempotente) pero nunca ejecuta el seed.
-
-No corras `npm run dev:api` y el contenedor al mismo tiempo: ambos abrirían el mismo archivo SQLite como escritores concurrentes. Elige uno u otro.
 
 Para que el acceso LAN (móvil, portátiles) funcione de forma consistente:
 
 - **Firewall de Windows:** si otro dispositivo no conecta a `http://<IP-LAN>:4031`, confirma que el Firewall permite conexiones entrantes al puerto 4031 (Docker Desktop suele pedir el permiso la primera vez).
-- **Arranque tras reiniciar el equipo:** `restart: unless-stopped` reinicia el contenedor si Docker Desktop se reinicia o crashea, pero no si apagas el PC. Para que la API vuelva a estar disponible sin intervención manual, configura Docker Desktop para iniciar con Windows.
+- **Arranque tras reiniciar el equipo:** `restart: unless-stopped` reinicia el contenedor si Docker Desktop se reinicia o crashea, pero no si apagas el PC o si el propio Docker Desktop se cierra (verás el contenedor en `Exited (137)`). Para que la API vuelva a estar disponible sin intervención manual, configura Docker Desktop para iniciar con Windows y, si lo encuentras caído, repite el paso 4 de arriba.
 
 No existe adaptador serverless, infraestructura remota, workflow de release ni destino fuera de la red local. No documentes un procedimiento de producción remota hasta elegir hosting externo, TLS, secretos, backups y política de acceso.
 

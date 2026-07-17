@@ -14,6 +14,7 @@ const ComparePage = lazy(() => import("@/features/comparison/pages/ComparePage")
 const StatisticsPage = lazy(() => import("@/features/statistics/pages/StatisticsPage"));
 const NumbersPage = lazy(() => import("@/features/numbers/pages/NumbersPage"));
 const NumberDetailPage = lazy(() => import("@/features/numbers/pages/NumberDetailPage"));
+const SuggestionsHistoryPage = lazy(() => import("@/features/suggestions/pages/SuggestionsHistoryPage"));
 const SettingsPage = lazy(() => import("@/features/settings/pages/SettingsPage"));
 const NotFoundPage = lazy(() => import("@/features/not-found/NotFoundPage"));
 
@@ -35,6 +36,7 @@ export function AppRouter() {
         <Route path="statistics" element={<StatisticsPage />} />
         <Route path="numbers" element={<NumbersPage />} />
         <Route path="numbers/:number" element={<NumberDetailPage />} />
+        <Route path="suggestions" element={<SuggestionsHistoryPage />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

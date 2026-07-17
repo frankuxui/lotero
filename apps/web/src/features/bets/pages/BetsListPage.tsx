@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { ConfirmActionDialog } from "@/components/shared/ConfirmActionDialog";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { FilterBar } from "@/components/shared/FilterBar";
@@ -111,7 +111,7 @@ export default function BetsListPage() {
   };
 
   return (
-    <>
+    <div className="w-full mx-auto max-w-7xl 3xl:max-w-8xl">
       <PageHeader
         title="Mis apuestas"
         description="Consulta y gestiona tus apuestas registradas."
@@ -156,7 +156,7 @@ export default function BetsListPage() {
       {betsQuery.data && betsQuery.data.items.length > 0 && (
         <>
           {useTable ? (
-            <div className="hidden md:block">
+            <div className="hidden md:block bg-background rounded-2xl overflow-hidden border border-border">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -178,11 +178,13 @@ export default function BetsListPage() {
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
                           {bet.lines[0]?.numbers.map((n) => (
-                            <NumberBadge key={n} value={n} size="sm" />
+                            <NumberBadge key={n} value={n} size="md" />
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell>{bet.lines.length}</TableCell>
+                      <TableCell>
+                        <span className="inline-flex items-center justify-center w-6 h-6 text-xs font-medium rounded-full bg-indigo-500/20 text-indigo-500">{bet.lines.length}</span>
+                      </TableCell>
                       <TableCell>{formatTimestamp(bet.createdAt)}</TableCell>
                       <TableCell className="text-right">
                         <BetActions bet={bet} onDuplicate={() => handleDuplicate(bet)} onDeleteRequest={() => requestDelete(bet)} isDuplicating={duplicatingId === bet.id} />
@@ -212,15 +214,15 @@ export default function BetsListPage() {
         </>
       )}
 
-      <ConfirmDialog
+      <ConfirmActionDialog
         open={Boolean(pendingDelete)}
         onOpenChange={(open) => !open && setPendingDelete(null)}
         title="Eliminar apuesta"
-        description={`¿Seguro que quieres eliminar "${pendingDelete?.label || "esta apuesta"}"? Esta acción no se puede deshacer.`}
+        message={`¿Seguro que quieres eliminar "${pendingDelete?.label || "esta apuesta"}"? Esta acción no se puede deshacer.`}
         confirmLabel="Eliminar"
-        isPending={deleteMutation.isPending}
+        isConfirming={deleteMutation.isPending}
         onConfirm={handleDelete}
       />
-    </>
+    </div>
   );
 }

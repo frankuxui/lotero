@@ -4,12 +4,15 @@
 :root {
   --background: #ffffff;
   --foreground: #0a0a0a;
+  --body-bg: #f0f2f5;
   --primary: #6366f1;
   --primary-foreground: #ffffff;
   --secondary: #f9fafb;
   --secondary-foreground: #0a0a0a;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
   --border-color: #e5e5e5;
   --code-scrollbar-track: rgb(226 232 240 / 65%);
   --code-scrollbar-thumb: rgb(148 163 184 / 70%);
@@ -19,12 +22,15 @@
 .dark {
   --background: #0a0a0a;
   --foreground: #ffffff;
+  --body-bg: #0a0a0a;
   --primary: #6366f1;
   --primary-foreground: #ffffff;
   --secondary: #1f2937;
   --secondary-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
   --border-color: #333333;
   --code-scrollbar-track: rgb(24 24 27 / 45%);
   --code-scrollbar-thumb: rgb(113 113 122 / 65%);
@@ -62,6 +68,8 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
 }
 
 html,
@@ -71,7 +79,7 @@ body {
   font-family: var(--font-sans);
 }
 body {
-  background: var(--background);
+  background: var(--body-bg);
   color: var(--foreground);
 }
 

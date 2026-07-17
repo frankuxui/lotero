@@ -12,6 +12,9 @@ export function useCreateDraw() {
       void queryClient.invalidateQueries({ queryKey: queryKeys.dashboard.all });
       void queryClient.invalidateQueries({ queryKey: queryKeys.statistics.all });
       void queryClient.invalidateQueries({ queryKey: queryKeys.numbers.all });
+      // La API regenera la sugerencia del día del juego afectado al crear el sorteo;
+      // invalidamos aquí para que el Dashboard y el histórico la recojan sin esperar el staleTime.
+      void queryClient.invalidateQueries({ queryKey: queryKeys.suggestions.all });
     },
   });
 }
@@ -26,6 +29,7 @@ export function useUpdateDraw(id: string) {
       void queryClient.invalidateQueries({ queryKey: queryKeys.dashboard.all });
       void queryClient.invalidateQueries({ queryKey: queryKeys.statistics.all });
       void queryClient.invalidateQueries({ queryKey: queryKeys.numbers.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.suggestions.all });
     },
   });
 }
@@ -39,6 +43,10 @@ export function useDeleteDraw() {
       void queryClient.invalidateQueries({ queryKey: queryKeys.dashboard.all });
       void queryClient.invalidateQueries({ queryKey: queryKeys.statistics.all });
       void queryClient.invalidateQueries({ queryKey: queryKeys.numbers.all });
+      // Borrar un sorteo puede cambiar el resultado (acierto/pendiente) que el histórico de
+      // sugerencias calcula al vuelo contra los sorteos reales; invalidamos por consistencia,
+      // aunque el backend no regenera la sugerencia en sí al borrar.
+      void queryClient.invalidateQueries({ queryKey: queryKeys.suggestions.all });
     },
   });
 }

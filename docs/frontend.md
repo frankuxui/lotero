@@ -4,7 +4,7 @@
 > **Cuándo leer:** antes de modificar `apps/web` o un consumidor de la API.
 > **Alcance:** workspace `@lotero/web`.
 > **Responsable:** mantenimiento frontend.
-> **Última revisión:** 2026-07-16.
+> **Última revisión:** 2026-07-17.
 > **Rutas relacionadas:** [`../apps/web/src`](../apps/web/src), [`api.md`](api.md), [`business-rules.md`](business-rules.md).
 
 ## Composición y rutas
@@ -25,6 +25,7 @@
 | `/history` | `HistoryPage` | Historial combinado |
 | `/compare` | `ComparePage` | Comparador |
 | `/statistics` | `StatisticsPage` | Métricas por juego y fecha |
+| `/suggestions` | `SuggestionsHistoryPage` | Histórico de sugerencias con filtros y acierto/desacierto |
 | `/numbers` | `NumbersPage` | Selector de número |
 | `/numbers/:number` | `NumberDetailPage` | Apariciones y estadísticas |
 | `/settings` | `SettingsPage` | Preferencias locales |
@@ -37,8 +38,9 @@
 - Las keys se centralizan en `src/lib/query/keys.ts`.
 - Configuración global: `staleTime` 30 s, un retry, sin refetch al enfocar y sin retry de mutations.
 - Juegos tienen `staleTime: Infinity`.
-- Mutaciones de sorteos invalidan draws, dashboard, statistics y numbers.
+- Mutaciones de sorteos invalidan draws, dashboard, statistics, numbers y suggestions (la creación/edición de un sorteo dispara regeneración de sugerencias en la API).
 - Mutaciones de apuestas invalidan bets, dashboard y numbers.
+- `useTodaySuggestions` (`staleTime` 5 min) alimenta la sección "Sugerencia del día" del dashboard; `useSuggestionsList` alimenta `/suggestions` con `placeholderData` para paginación sin parpadeo.
 
 No hagas `fetch` en componentes ni guardes respuestas remotas en Zustand.
 
@@ -49,7 +51,7 @@ No hagas `fetch` en componentes ni guardes respuestas remotas en Zustand.
 - Estado de formulario: React Hook Form.
 - Estado local efímero: `useState`.
 - Estado persistido: `settingsStore`, clave `lotero-settings` en `localStorage`.
-- Notificaciones: `toastStore`, eliminación automática a los cuatro segundos.
+- Notificaciones: helper `toast()` en `@/store/toastStore` (delgado, sin estado propio) sobre `sonner`; el `Toaster` en `components/shared/Toaster.tsx` sigue el tema activo vía `next-themes` y se monta una vez en `AppShell`.
 
 ## Formularios y validación
 

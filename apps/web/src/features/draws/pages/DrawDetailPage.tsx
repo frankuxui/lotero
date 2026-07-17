@@ -2,7 +2,7 @@ import { useState } from "react";
 import { GitCompare, Pencil, Trash2 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { BackButton } from "@/components/shared/BackButton";
-import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { ConfirmActionDialog } from "@/components/shared/ConfirmActionDialog";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { GameBadge } from "@/components/shared/GameBadge";
 import { LoadingState } from "@/components/shared/LoadingState";
@@ -137,13 +137,13 @@ export default function DrawDetailPage() {
         <BackButton fallback="/draws" />
       </div>
 
-      <ConfirmDialog
+      <ConfirmActionDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
         title="Eliminar sorteo"
-        description="Esta acción no se puede deshacer."
+        message="Esta acción no se puede deshacer."
         confirmLabel="Eliminar"
-        isPending={deleteMutation.isPending}
+        isConfirming={deleteMutation.isPending}
         onConfirm={handleDelete}
       />
     </>

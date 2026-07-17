@@ -11,6 +11,7 @@ import { drawRoutes } from "./modules/draws/draw.routes.js";
 import { gameRoutes } from "./modules/games/game.routes.js";
 import { numberRoutes } from "./modules/numbers/numbers.routes.js";
 import { statisticsRoutes } from "./modules/statistics/statistics.routes.js";
+import { suggestionRoutes } from "./modules/suggestions/suggestion.routes.js";
 import { logger } from "./utils/logger.js";
 import { sendSuccess } from "./utils/response.js";
 
@@ -32,6 +33,7 @@ export function createApp(): Express {
   app.use("/api/statistics", statisticsRoutes);
   app.use("/api/numbers", numberRoutes);
   app.use("/api/dashboard", dashboardRoutes);
+  app.use("/api/suggestions", suggestionRoutes);
 
   app.use(notFoundMiddleware);
   app.use(errorHandlerMiddleware);

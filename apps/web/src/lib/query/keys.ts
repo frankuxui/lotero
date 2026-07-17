@@ -2,6 +2,7 @@ import type { ComparisonRequest } from "@/types/comparison";
 import type { ListBetsQuery } from "@/types/bet";
 import type { ListDrawsQuery } from "@/types/draw";
 import type { StatisticsQuery } from "@/types/statistics";
+import type { ListSuggestionsQuery } from "@/types/suggestion";
 
 export const queryKeys = {
   games: {
@@ -32,5 +33,10 @@ export const queryKeys = {
   },
   dashboard: {
     all: ["dashboard"] as const,
+  },
+  suggestions: {
+    all: ["suggestions"] as const,
+    today: ["suggestions", "today"] as const,
+    list: (query: ListSuggestionsQuery) => ["suggestions", "list", query] as const,
   },
 };

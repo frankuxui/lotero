@@ -15,7 +15,7 @@ export function DrawCard({ draw, gameLabel, extrasConfig, to, actions }: { draw:
     <>
       <div className="flex items-center justify-between gap-2">
         <GameBadge game={draw.game} label={gameLabel} />
-        <span className="text-sm">{formatPlainDate(draw.drawDate, dateFormat)}</span>
+        <span className="text-xs font-medium text-foreground/70">{formatPlainDate(draw.drawDate, dateFormat)}</span>
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-1.5">
         {draw.numbers.map((n) => (
@@ -37,7 +37,7 @@ export function DrawCard({ draw, gameLabel, extrasConfig, to, actions }: { draw:
 
   return (
     <Card>
-      <CardContent className="pt-4">
+      <CardContent>
         {to ? (
           <Link to={to} className="block rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600">
             {content}

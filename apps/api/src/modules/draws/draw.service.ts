@@ -6,11 +6,31 @@ import { parseCreateDraw, parseUpdateDraw } from "./draw.schemas.js";
 import type { Draw, ListDrawsQuery } from "./draw.types.js";
 
 export class DrawService {
-  constructor(private readonly repository: DrawRepository) {}
+  /**
+   * onDrawChanged es opcional a propósito: mantiene DrawService desacoplado del módulo de
+   * sugerencias (sin import circular ni acceso directo a otro repositorio) y testeable sin
+   * esa dependencia. Quien construye el servicio (draw.routes.ts) decide qué reacciona a un
+   * sorteo nuevo/editado. El fallo de ese callback nunca debe impedir guardar el sorteo.
+   */
+  constructor(
+    private readonly repository: DrawRepository,
+    private readonly onDrawChanged?: (game: string) => void,
+  ) {}
+
+  private notifyDrawChanged(game: string): void {
+    try {
+      this.onDrawChanged?.(game);
+    } catch {
+      // Intencional: un fallo al disparar la regeneración de la sugerencia no debe
+      // afectar la respuesta de creación/edición del sorteo.
+    }
+  }
 
   async create(input: unknown): Promise<Draw> {
     const parsed = parseCreateDraw(input);
-    return this.repository.create(parsed);
+    const draw = await this.repository.create(parsed);
+    this.notifyDrawChanged(draw.game);
+    return draw;
   }
 
   async list(query: ListDrawsQuery): Promise<{ data: Draw[]; meta: PageMeta }> {
@@ -36,6 +56,7 @@ export class DrawService {
     if (!updated) {
       throw HttpError.notFound(`Sorteo no encontrado: ${id}`);
     }
+    this.notifyDrawChanged(updated.game);
     return updated;
   }
 

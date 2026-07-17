@@ -5,7 +5,7 @@ export function NumberBadge({
   value,
   size = "md",
   variant = "default",
-  className,
+  className
 }: {
   value: number;
   size?: "sm" | "md" | "lg";
@@ -19,11 +19,11 @@ export function NumberBadge({
         size === "sm" && "size-6 text-xs",
         size === "md" && "size-8 text-sm",
         size === "lg" && "size-10 text-base",
-        variant === "default" && "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-100",
+        variant === "default" && "bg-foreground/10",
         variant === "match" && "bg-emerald-600 text-white",
         variant === "muted" && "bg-slate-50 text-slate-400 dark:bg-slate-900 dark:text-slate-600",
-        variant === "extra" && "bg-amber-500 text-white",
-        className,
+        variant === "extra" && "bg-yellow-500 text-white",
+        className
       )}
     >
       {formatLotteryNumber(value)}

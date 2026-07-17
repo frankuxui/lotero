@@ -44,14 +44,8 @@ export default function HistoryPage() {
 
   const commonQuery = { game: game || undefined, dateFrom: dateFrom || undefined, dateTo: dateTo || undefined };
 
-  const drawsQuery = useDrawsList(
-    { ...commonQuery, limit: batchSize, offset: 0 },
-    { enabled: type === "all" || type === "draws" },
-  );
-  const betsQuery = useBetsList(
-    { ...commonQuery, limit: batchSize, offset: 0 },
-    { enabled: type === "all" || type === "bets" },
-  );
+  const drawsQuery = useDrawsList({ ...commonQuery, limit: batchSize, offset: 0 }, { enabled: type === "all" || type === "draws" });
+  const betsQuery = useBetsList({ ...commonQuery, limit: batchSize, offset: 0 }, { enabled: type === "all" || type === "bets" });
 
   const setParam = (key: string, value: string) => {
     const next = new URLSearchParams(searchParams);
@@ -61,10 +55,7 @@ export default function HistoryPage() {
     setBatchSize(itemsPerPage);
   };
 
-  const isPending =
-    gamesQuery.isPending ||
-    (drawsQuery.fetchStatus !== "idle" && drawsQuery.isPending) ||
-    (betsQuery.fetchStatus !== "idle" && betsQuery.isPending);
+  const isPending = gamesQuery.isPending || (drawsQuery.fetchStatus !== "idle" && drawsQuery.isPending) || (betsQuery.fetchStatus !== "idle" && betsQuery.isPending);
   const isError = gamesQuery.isError || drawsQuery.isError || betsQuery.isError;
 
   const parsedNumber = numberFilter ? Number(numberFilter) : undefined;
@@ -87,19 +78,13 @@ export default function HistoryPage() {
     return list.sort((a, b) => (a.date < b.date ? 1 : -1));
   }, [type, drawsQuery.data, betsQuery.data, hasValidNumberFilter, parsedNumber]);
 
-  const canLoadMore =
-    (type !== "bets" && (drawsQuery.data?.meta.total ?? 0) > batchSize) ||
-    (type !== "draws" && (betsQuery.data?.meta.total ?? 0) > batchSize);
+  const canLoadMore = (type !== "bets" && (drawsQuery.data?.meta.total ?? 0) > batchSize) || (type !== "draws" && (betsQuery.data?.meta.total ?? 0) > batchSize);
 
   const columns: RecordTableColumn<HistoryEntry>[] = [
     {
       key: "type",
       header: "Tipo",
-      cell: (entry) => (
-        <Badge variant={entry.kind === "draw" ? "default" : "secondary"}>
-          {entry.kind === "draw" ? "Sorteo" : "Apuesta"}
-        </Badge>
-      ),
+      cell: (entry) => <Badge variant={entry.kind === "draw" ? "default" : "secondary"}>{entry.kind === "draw" ? "Sorteo" : "Apuesta"}</Badge>
     },
     {
       key: "game",
@@ -107,24 +92,23 @@ export default function HistoryPage() {
       cell: (entry) => {
         const g = entry.kind === "draw" ? entry.draw.game : entry.bet.game;
         return <GameBadge game={g} label={gameLabel(games, g)} />;
-      },
+      }
     },
     {
       key: "date",
       header: "Fecha",
-      cell: (entry) =>
-        entry.kind === "draw" ? formatPlainDate(entry.draw.drawDate, dateFormat) : formatTimestamp(entry.bet.createdAt),
+      cell: (entry) => (entry.kind === "draw" ? formatPlainDate(entry.draw.drawDate, dateFormat) : formatTimestamp(entry.bet.createdAt))
     },
     {
       key: "numbers",
       header: "Números",
       cell: (entry) => (
         <div className="flex flex-wrap gap-1">
-          {(entry.kind === "draw" ? entry.draw.numbers : entry.bet.lines[0]?.numbers ?? []).map((n) => (
+          {(entry.kind === "draw" ? entry.draw.numbers : (entry.bet.lines[0]?.numbers ?? [])).map((n) => (
             <NumberBadge key={n} value={n} size="sm" />
           ))}
         </div>
-      ),
+      )
     },
     {
       key: "view",
@@ -134,8 +118,8 @@ export default function HistoryPage() {
         <Button asChild variant="ghost" size="sm">
           <Link to={entry.kind === "draw" ? `/draws/${entry.draw.id}` : `/bets/${entry.bet.id}`}>Ver</Link>
         </Button>
-      ),
-    },
+      )
+    }
   ];
 
   return (
@@ -145,7 +129,7 @@ export default function HistoryPage() {
       <FilterBar>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="history-type">Tipo</Label>
-          <Select id="history-type" value={type} onChange={(event) => setParam("type", event.target.value)} className="w-40">
+          <Select id="history-type" value={type} onChange={(event) => setParam("type", event.target.value)}>
             <option value="all">Todos</option>
             <option value="draws">Sorteos</option>
             <option value="bets">Apuestas</option>
@@ -153,48 +137,19 @@ export default function HistoryPage() {
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="history-game">Juego</Label>
-          <GameSelector
-            id="history-game"
-            games={games}
-            value={game}
-            onChange={(value) => setParam("game", value)}
-            allowAll
-            className="w-48"
-          />
+          <GameSelector id="history-game" games={games} value={game} onChange={(value) => setParam("game", value)} allowAll />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="history-from">Desde</Label>
-          <Input
-            id="history-from"
-            type="date"
-            value={dateFrom}
-            max={dateTo || undefined}
-            onChange={(event) => setParam("dateFrom", event.target.value)}
-            className="w-40"
-          />
+          <Input id="history-from" type="date" value={dateFrom} max={dateTo || undefined} onChange={(event) => setParam("dateFrom", event.target.value)} />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="history-to">Hasta</Label>
-          <Input
-            id="history-to"
-            type="date"
-            value={dateTo}
-            min={dateFrom || undefined}
-            onChange={(event) => setParam("dateTo", event.target.value)}
-            className="w-40"
-          />
+          <Input id="history-to" type="date" value={dateTo} min={dateFrom || undefined} onChange={(event) => setParam("dateTo", event.target.value)} />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="history-number">Número (en lo cargado)</Label>
-          <Input
-            id="history-number"
-            type="number"
-            min={1}
-            value={numberFilter}
-            onChange={(event) => setParam("number", event.target.value)}
-            placeholder="Ej. 23"
-            className="w-32"
-          />
+          <Input id="history-number" type="number" min={1} value={numberFilter} onChange={(event) => setParam("number", event.target.value)} placeholder="Ej. 23" className="w-32" />
         </div>
       </FilterBar>
 
@@ -218,9 +173,7 @@ export default function HistoryPage() {
         />
       )}
 
-      {!isPending && !isError && entries.length === 0 && (
-        <EmptyState title="Sin registros" description="No hay sorteos ni apuestas que coincidan con estos filtros." />
-      )}
+      {!isPending && !isError && entries.length === 0 && <EmptyState title="Sin registros" description="No hay sorteos ni apuestas que coincidan con estos filtros." />}
 
       {!isPending && !isError && entries.length > 0 && (
         <>
@@ -234,7 +187,7 @@ export default function HistoryPage() {
                 <DrawCard key={`draw-${entry.draw.id}`} draw={entry.draw} gameLabel={gameLabel(games, entry.draw.game)} to={`/draws/${entry.draw.id}`} />
               ) : (
                 <BetCard key={`bet-${entry.bet.id}`} bet={entry.bet} gameLabel={gameLabel(games, entry.bet.game)} to={`/bets/${entry.bet.id}`} compact />
-              ),
+              )
             )}
           </div>
 

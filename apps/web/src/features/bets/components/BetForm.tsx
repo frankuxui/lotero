@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { Copy, Plus, Trash2 } from "lucide-react";
 import { ExtraFieldControl } from "@/components/shared/number-selector/ExtraFieldControl";
 import { NumberCombinationField } from "@/components/shared/number-selector/NumberCombinationField";
@@ -21,6 +21,7 @@ export function BetForm({
   isSubmitting,
   submitLabel,
   serverError,
+  onLabelChange,
 }: {
   config: GameConfig;
   defaultValues?: BetFormValues;
@@ -28,6 +29,9 @@ export function BetForm({
   isSubmitting: boolean;
   submitLabel: string;
   serverError?: ApiError | null;
+  /** Notifica el valor en vivo de "Observaciones" en cada tecleo, para que la pantalla que
+   * contiene el formulario (p. ej. el título de la página) pueda reflejarlo sin esperar a guardar. */
+  onLabelChange?: (label: string) => void;
 }) {
   const schema = useMemo(() => buildBetFormSchema(config), [config]);
 
@@ -42,6 +46,15 @@ export function BetForm({
 
   const { control, register, handleSubmit, formState, setError } = form;
   const { fields, append, remove, insert } = useFieldArray({ control, name: "lines" });
+
+  // useWatch (a diferencia de leer form.getValues() una vez) suscribe al componente a cada
+  // cambio del campo y fuerza un re-render, que es lo que permite propagar el valor mientras
+  // el usuario todavía está escribiendo, en vez de solo al perder foco o al enviar el formulario.
+  const watchedLabel = useWatch({ control, name: "label" });
+
+  useEffect(() => {
+    onLabelChange?.(watchedLabel ?? "");
+  }, [watchedLabel, onLabelChange]);
 
   useEffect(() => {
     if (!serverError) return;

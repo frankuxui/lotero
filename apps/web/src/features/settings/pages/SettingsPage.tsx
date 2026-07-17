@@ -38,23 +38,16 @@ export default function SettingsPage() {
             <CardContent className="flex flex-col gap-5 pt-4">
               <div className="flex flex-col gap-1.5 sm:max-w-xs">
                 <Label htmlFor="settings-date-format">Formato de fecha</Label>
-                <Select
-                  id="settings-date-format"
-                  value={dateFormat}
-                  onChange={(event) => setDateFormat(event.target.value as "dd/mm/yyyy" | "yyyy-mm-dd")}
-                >
+                <Select id="settings-date-format" value={dateFormat} onChange={(event) => setDateFormat(event.target.value as "dd/mm/yyyy" | "yyyy-mm-dd" | "long")}>
                   <option value="dd/mm/yyyy">DD/MM/AAAA</option>
                   <option value="yyyy-mm-dd">AAAA-MM-DD</option>
+                  <option value="long">Fecha larga — 23 de julio de 2026</option>
                 </Select>
               </div>
 
               <div className="flex flex-col gap-1.5 sm:max-w-xs">
                 <Label htmlFor="settings-items-per-page">Elementos por página</Label>
-                <Select
-                  id="settings-items-per-page"
-                  value={String(itemsPerPage)}
-                  onChange={(event) => setItemsPerPage(Number(event.target.value))}
-                >
+                <Select id="settings-items-per-page" value={String(itemsPerPage)} onChange={(event) => setItemsPerPage(Number(event.target.value))}>
                   <option value="5">5</option>
                   <option value="10">10</option>
                   <option value="20">20</option>
@@ -89,22 +82,13 @@ export default function SettingsPage() {
             <CardContent className="flex flex-col gap-5 pt-4">
               <div className="flex flex-col gap-1.5 sm:max-w-xs">
                 <Label htmlFor="settings-default-game">Juego predeterminado</Label>
-                <GameSelector
-                  id="settings-default-game"
-                  games={games}
-                  value={defaultGame ?? ""}
-                  onChange={(value) => setDefaultGame(value || null)}
-                  allowAll
-                  allowAllLabel="Sin preferencia"
-                />
+                <GameSelector id="settings-default-game" games={games} value={defaultGame ?? ""} onChange={(value) => setDefaultGame(value || null)} allowAll allowAllLabel="Sin preferencia" />
               </div>
 
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <Label htmlFor="settings-confirm-delete">Confirmar antes de eliminar</Label>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Muestra un diálogo de confirmación al eliminar apuestas o sorteos.
-                  </p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Muestra un diálogo de confirmación al eliminar apuestas o sorteos.</p>
                 </div>
                 <Switch id="settings-confirm-delete" checked={confirmBeforeDelete} onCheckedChange={setConfirmBeforeDelete} />
               </div>

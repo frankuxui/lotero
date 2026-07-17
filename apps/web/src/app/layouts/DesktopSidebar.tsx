@@ -2,6 +2,7 @@ import { Dices } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { primaryNavItems, secondaryNavItems, type NavItem } from "@/app/layouts/nav-items";
+import ThemeToggle from "@/components/ThemeToggle";
 
 function SidebarLink({ item }: { item: NavItem }) {
   const Icon = item.icon;
@@ -40,6 +41,10 @@ export function DesktopSidebar() {
           <SidebarLink key={item.to} item={item} />
         ))}
       </nav>
+      <div className="flex items-center justify-between gap-2 border-t border-slate-200 px-6 py-4 dark:border-slate-800">
+        <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Tema</span>
+        <ThemeToggle />
+      </div>
     </aside>
   );
 }

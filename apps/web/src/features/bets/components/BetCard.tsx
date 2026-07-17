@@ -13,7 +13,7 @@ export function BetCard({
   extrasConfig,
   to,
   actions,
-  compact,
+  compact
 }: {
   bet: Bet;
   gameLabel?: string;
@@ -23,23 +23,20 @@ export function BetCard({
   compact?: boolean;
 }) {
   const header = (
-    <div className="flex items-center justify-between gap-2">
-      <div className="flex items-center gap-2">
-        <GameBadge game={bet.game} label={gameLabel} />
-        <span className="font-medium text-slate-900 dark:text-slate-100">{bet.label || "Apuesta sin nombre"}</span>
+    <div className="flex items-start w-full justify-between flex-col gap-2">
+      <div className="flex items-center w-full justify-between gap-2">
+        <GameBadge game={bet.game} label={gameLabel} className="py-1 px-3" />
+        <span className="font-medium text-xs text-foreground/60">{formatTimestamp(bet.createdAt)}</span>
       </div>
-      <span className="text-xs text-slate-500 dark:text-slate-400">{formatTimestamp(bet.createdAt)}</span>
+      <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{bet.label || "Apuesta sin nombre"}</span>
     </div>
   );
 
   return (
     <Card>
-      <CardContent className="pt-4">
+      <CardContent className="w-full">
         {to ? (
-          <Link
-            to={to}
-            className="block rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
-          >
+          <Link to={to} className="block w-full rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600">
             {header}
           </Link>
         ) : (
@@ -56,7 +53,7 @@ export function BetCard({
             ))}
           </div>
         )}
-        {actions && <div className="mt-3 flex items-center gap-2">{actions}</div>}
+        {actions && <div className="mt-3 flex items-center gap-2 w-full">{actions}</div>}
       </CardContent>
     </Card>
   );

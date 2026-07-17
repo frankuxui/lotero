@@ -4,7 +4,7 @@
 > **Cuándo leer:** antes de modificar código, configuración o documentación.
 > **Alcance:** todo el repositorio.
 > **Responsable:** mantenimiento del repositorio.
-> **Última revisión:** 2026-07-16.
+> **Última revisión:** 2026-07-17.
 > **Rutas relacionadas:** [`../apps/web`](../apps/web), [`../apps/api`](../apps/api), [`ai/task-protocol.md`](ai/task-protocol.md).
 
 ## Cambios
@@ -28,7 +28,7 @@
 
 - Páginas orquestan; componentes compartidos presentan/reutilizan; hooks gestionan acceso remoto.
 - Nunca hagas HTTP fuera de `src/lib/api`.
-- Datos remotos en TanStack Query; preferencias/toasts en Zustand.
+- Datos remotos en TanStack Query; preferencias en Zustand; toasts vía `sonner` (`@/store/toastStore`).
 - Mantén filtros compartibles en URL cuando ya se siga ese patrón.
 - Cubre loading, error, vacío y éxito; conserva labels, roles, foco y navegación por teclado.
 - Reutiliza tokens de `App.css` y primitivas de `components/ui`.

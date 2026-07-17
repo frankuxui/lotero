@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-const PALETTE = ["indigo", "emerald", "amber", "rose", "sky", "violet"] as const;
+const PALETTE = ["indigo", "emerald", "amber", "rose", "sky", "violet", "blue"] as const;
 
 const COLOR_CLASSES: Record<(typeof PALETTE)[number], string> = {
   indigo: "bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300",
@@ -8,11 +8,21 @@ const COLOR_CLASSES: Record<(typeof PALETTE)[number], string> = {
   amber: "bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300",
   rose: "bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300",
   sky: "bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300",
-  violet: "bg-violet-100 text-violet-700 dark:bg-violet-950/60 dark:text-violet-300"
+  violet: "bg-violet-100 text-violet-700 dark:bg-violet-950/60 dark:text-violet-300",
+  blue: "bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300"
 };
 
-/** Color estable derivado del id del juego (sin listar juegos concretos a mano). */
+/** Colores fijos para los juegos activos; el resto cae al hash genérico. */
+const GAME_COLOR_OVERRIDES: Record<string, (typeof PALETTE)[number]> = {
+  BONOLOTO: "blue",
+  PRIMITIVA: "emerald"
+};
+
+/** Color estable derivado del id del juego para cualquier juego sin color fijo asignado. */
 function colorForGame(id: string): (typeof PALETTE)[number] {
+  const override = GAME_COLOR_OVERRIDES[id];
+  if (override) return override;
+
   let hash = 0;
   for (let i = 0; i < id.length; i += 1) hash = (hash * 31 + id.charCodeAt(i)) % PALETTE.length;
   return PALETTE[Math.abs(hash) % PALETTE.length]!;

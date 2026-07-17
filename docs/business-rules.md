@@ -4,7 +4,7 @@
 > **Cuándo leer:** al cambiar juegos, validaciones, comparación, estadísticas o buscador.
 > **Alcance:** comportamiento de dominio vigente y limitaciones conocidas.
 > **Responsable:** mantenimiento de dominio.
-> **Última revisión:** 2026-07-16.
+> **Última revisión:** 2026-07-17.
 > **Rutas relacionadas:** [`../apps/api/src/config/game-config.ts`](../apps/api/src/config/game-config.ts), [`../apps/api/src/modules`](../apps/api/src/modules), [`../apps/web/src/lib/validation/game-rules.ts`](../apps/web/src/lib/validation/game-rules.ts).
 
 ## GameConfig
@@ -64,7 +64,23 @@ Sin juego explícito se elige el primer juego registrado cuyo rango contiene el 
 
 ## Dashboard
 
-Muestra cinco sorteos y apuestas recientes, conteos por juego, cinco calientes/fríos por juego y cinco mejores coincidencias. Para cada línea reciente busca su mejor sorteo y descarta resultados con cero aciertos.
+Muestra cinco sorteos y apuestas recientes, conteos por juego, cinco calientes/fríos por juego y cinco mejores coincidencias. Para cada línea reciente busca su mejor sorteo y descarta resultados con cero aciertos. También muestra la "Sugerencia del día" (una combinación por juego registrado) con enlace al histórico.
+
+## Sugerencia del día
+
+Por cada juego de `GameConfig`, `generateSuggestion()` combina tres señales normalizadas y ponderadas para elegir números:
+
+```text
+score(n) = 0.40 · proximidad(n) + 0.35 · coincidenciaCalendario(n) + 0.25 · frecuencia(n)
+```
+
+- **Proximidad numérica**: cercanía a los números de los últimos 10 sorteos del juego, con decaimiento por recencia (sorteos más recientes pesan más) y por distancia (radio de influencia de 2 unidades).
+- **Coincidencia de calendario**: números que salieron en sorteos con el mismo día/mes (ventana de ±3 días, ignorando el año) en cualquier año anterior.
+- **Frecuencia/"frialdad"**: reutiliza `computeStatistics()` en vez de recalcular frecuencias por separado.
+
+Se seleccionan los números con mayor puntuación hasta completar la cantidad exigida por `GameConfig` (respetando orden automático si aplica); los extras se derivan con la misma lógica adaptada a su rango. La sugerencia queda marcada con `algorithmVersion` para no reinterpretar sugerencias históricas si cambian pesos o señales en el futuro.
+
+La sugerencia se persiste por juego y fecha (no se recalcula en cada lectura) y se regenera automáticamente al crear o editar un sorteo; ver [api.md](api.md#sugerencias-sugerencia-del-día) para el detalle de persistencia y disparadores. El acierto/desacierto frente al sorteo real de esa fecha se calcula al vuelo, nunca se persiste.
 
 ## Sincronización obligatoria
 

@@ -27,6 +27,14 @@ export default function BetFormPage() {
 
   const [gameOverride, setGameOverride] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<ApiError | null>(null);
+  // Refleja lo que se escribe en "Observaciones" mientras se teclea (vía BetForm.onLabelChange),
+  // en vez de depender de betQuery.data.label, que solo se actualiza tras guardar y refetchear.
+  const [liveLabel, setLiveLabel] = useState("");
+  // Rastrea el último label de la API que ya sembramos en liveLabel, para sembrarlo una sola
+  // vez por valor nuevo. Se ajusta durante el render (no en un efecto) siguiendo el patrón
+  // recomendado por React para derivar estado a partir de datos externos sin causar un
+  // renderizado en cascada: https://react.dev/learn/you-might-not-need-an-effect
+  const [seededLabel, setSeededLabel] = useState<string | undefined>(undefined);
 
   const games = useMemo(() => gamesQuery.data ?? [], [gamesQuery.data]);
 
@@ -47,12 +55,22 @@ export default function BetFormPage() {
     };
   }, [isEdit, betQuery.data, config]);
 
-  const breadcrumbs = [{ label: "Mis apuestas", to: "/bets" }, { label: isEdit ? "Editar" : "Nueva" }];
+  // Siembra el título con el nombre ya guardado en cuanto llega de la API, para que en modo
+  // edición no aparezca "Editar apuesta" un instante antes de mostrar el nombre real. A partir
+  // de ahí, BetForm.onLabelChange (más abajo) toma el relevo y lo mantiene en vivo mientras se teclea.
+  if (betQuery.data?.label && betQuery.data.label !== seededLabel) {
+    setSeededLabel(betQuery.data.label);
+    setLiveLabel(betQuery.data.label);
+  }
+
+  const displayName = liveLabel.trim();
+  const fallbackTitle = isEdit ? "Editar apuesta" : "Nueva apuesta";
+  const breadcrumbs = [{ label: "Mis apuestas", to: "/bets" }, { label: displayName || fallbackTitle }];
 
   if (isPending) {
     return (
       <>
-        <PageHeader title={isEdit ? "Editar apuesta" : "Nueva apuesta"} breadcrumbs={breadcrumbs} />
+        <PageHeader title={fallbackTitle} breadcrumbs={breadcrumbs} />
         <LoadingState />
       </>
     );
@@ -61,7 +79,7 @@ export default function BetFormPage() {
   if (isError || !config) {
     return (
       <>
-        <PageHeader title={isEdit ? "Editar apuesta" : "Nueva apuesta"} breadcrumbs={breadcrumbs} />
+        <PageHeader title={fallbackTitle} breadcrumbs={breadcrumbs} />
         <ErrorState
           message="No se pudo cargar el formulario."
           onRetry={() => {
@@ -92,7 +110,7 @@ export default function BetFormPage() {
 
   return (
     <>
-      <PageHeader title={isEdit ? "Editar apuesta" : "Nueva apuesta"} breadcrumbs={breadcrumbs} />
+      <PageHeader title={displayName || fallbackTitle} breadcrumbs={breadcrumbs} />
       <div className="mb-6 flex flex-col gap-1.5 sm:max-w-xs">
         <Label htmlFor="bet-game">Juego</Label>
         <GameSelector id="bet-game" games={games} value={config.id} onChange={setGameOverride} />
@@ -105,6 +123,7 @@ export default function BetFormPage() {
         isSubmitting={createMutation.isPending || updateMutation.isPending}
         submitLabel={isEdit ? "Guardar cambios" : "Crear apuesta"}
         serverError={submitError}
+        onLabelChange={setLiveLabel}
       />
     </>
   );

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { ConfirmActionDialog } from "@/components/shared/ConfirmActionDialog";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { FilterBar } from "@/components/shared/FilterBar";
@@ -148,13 +148,13 @@ export default function DrawsListPage() {
         </>
       )}
 
-      <ConfirmDialog
+      <ConfirmActionDialog
         open={Boolean(pendingDelete)}
         onOpenChange={(open) => !open && setPendingDelete(null)}
         title="Eliminar sorteo"
-        description="Esta acción no se puede deshacer."
+        message="Esta acción no se puede deshacer."
         confirmLabel="Eliminar"
-        isPending={deleteMutation.isPending}
+        isConfirming={deleteMutation.isPending}
         onConfirm={handleDelete}
       />
     </>

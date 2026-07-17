@@ -4,12 +4,12 @@
 > **Cuándo leer:** antes de modificar `apps/api` o integrar un consumidor.
 > **Alcance:** workspace `@lotero/api` y contrato HTTP `/api`.
 > **Responsable:** mantenimiento API y datos.
-> **Última revisión:** 2026-07-16.
+> **Última revisión:** 2026-07-17.
 > **Rutas relacionadas:** [`../apps/api/src`](../apps/api/src), [`frontend.md`](frontend.md), [`business-rules.md`](business-rules.md).
 
 ## Composición
 
-`server.ts` crea la aplicación y escucha. `app.ts` configura CORS, JSON, `pino-http`, health, routers, 404 y error handler. Sorteos y apuestas separan controller, service y repository; los módulos analíticos reutilizan los repositorios.
+`server.ts` crea la aplicación y escucha. `app.ts` configura CORS, JSON, `pino-http`, health, routers, 404 y error handler. Sorteos y apuestas separan controller, service y repository; los módulos analíticos reutilizan los repositorios. El módulo `suggestions` sigue la misma separación (controller/service/repository/engine) y se regenera al crear o actualizar un sorteo mediante un callback no bloqueante desde `draw.service.ts`.
 
 ## Contratos comunes
 
@@ -42,8 +42,24 @@ Zod produce 400, juego o recurso inexistente produce 404 y los errores no contro
 | `GET /api/statistics` | `game,dateFrom?,dateTo?` | Estadísticas | 400, 404 |
 | `GET /api/numbers/:number` | Entero; `game?` | Detalle de número | 400, 404 |
 | `GET /api/dashboard` | — | Resumen agregado | 500 |
+| `GET /api/suggestions/today` | — | `Suggestion[]` (una por juego registrado); sección "Sugerencia del día" del dashboard | 500 |
+| `GET /api/suggestions` | `game?,dateFrom?,dateTo?,limit,offset` | Lista paginada con `outcome` calculado al vuelo; histórico de sugerencias | 400, 404 |
 
 Las rutas responsables están en `src/modules/*/*.routes.ts`; controllers adaptan HTTP, services validan/orquestan y repositories acceden a datos.
+
+## Sugerencias ("Sugerencia del día")
+
+`suggestion.engine.ts` genera una combinación por juego combinando tres señales ponderadas (`ALGORITMO_VERSION = "v1"`):
+
+| Señal | Peso | Fuente |
+|---|---|---|
+| Proximidad numérica | 0.40 | Cercanía a números de los últimos 10 sorteos, con decaimiento por recencia y distancia (radio 2) |
+| Coincidencia de calendario | 0.35 | Números que salieron en el mismo día/mes (±3 días) en años anteriores, ignorando el año |
+| Frecuencia/"frialdad" | 0.25 | Reutiliza `computeStatistics()` del módulo de estadísticas, sin duplicar lógica |
+
+La sugerencia se **persiste** (tabla `suggestions`, índice único `game + suggestion_date`) en vez de recalcularse en cada lectura: no existe infraestructura de cron/scheduler en este repositorio (ver [deuda técnica](technical-debt.md)) y la ingesta de sorteos es siempre manual vía `POST /api/draws`. La regeneración se dispara ahí mismo (no bloqueante, con `try/catch` que no falla la petición del sorteo) y `GET /api/suggestions/today` tiene un fallback perezoso que genera la sugerencia si falta para la fecha actual.
+
+El acierto/desacierto (`SuggestionOutcome`) **no se persiste**: se calcula en el momento de la lectura cruzando la fecha de la sugerencia con los sorteos reales de ese juego y fecha, para evitar datos derivados duplicados.
 
 ## Persistencia
 
@@ -52,8 +68,9 @@ Las rutas responsables están en `src/modules/*/*.routes.ts`; controllers adapta
 | `draws` | Juego, fecha, números, extras y timestamps |
 | `bets` | Juego, etiqueta y timestamps |
 | `bet_lines` | Líneas asociadas con números y extras |
+| `suggestions` | Juego, fecha, números, extras, `algorithm_version`, desglose de señales (`signals`) y timestamps; índice único `(game, suggestion_date)` |
 
-Los UUID se generan con `crypto.randomUUID`. Las creaciones/actualizaciones multilínea usan transacciones. No hay índices adicionales, restricción de sorteo único ni foreign key hacia un catálogo de juegos.
+Los UUID se generan con `crypto.randomUUID`. Las creaciones/actualizaciones multilínea usan transacciones. No hay índices adicionales aparte del de `suggestions`, ni restricción de sorteo único, ni foreign key hacia un catálogo de juegos.
 
 ## Configuración y logs
 

@@ -14,7 +14,7 @@ Lotero es un monorepo npm con una SPA React en `apps/web` y una API Express/SQLi
 - Aplica cambios mínimos; no mezcles refactors ajenos a la tarea.
 - `apps/api/src/config/game-config.ts` es la fuente de reglas de juegos.
 - No uses `fetch` directamente en componentes; usa `apps/web/src/lib/api/`.
-- TanStack Query gestiona datos remotos; Zustand queda para preferencias locales y toasts.
+- TanStack Query gestiona datos remotos; Zustand queda para preferencias locales; los toasts usan `sonner` (`@/store/toastStore`).
 - No edites `package-lock.json`, `dist/` ni migraciones Drizzle generadas a mano.
 - No cambies un contrato API sin revisar tipos, consumidores, caché y documentación.
 - No ocultes errores de lint, TypeScript, build o tests.
