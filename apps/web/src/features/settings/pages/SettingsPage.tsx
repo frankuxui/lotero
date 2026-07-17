@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { GameSelector } from "@/components/shared/GameSelector";
-import { PageHeader } from "@/components/shared/PageHeader";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -8,6 +7,7 @@ import { Select } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useGames } from "@/hooks/useGames";
 import { useSettingsStore } from "@/store/settingsStore";
+import { PageHeader } from "@/components/shared/PageHeader";
 
 export default function SettingsPage() {
   const gamesQuery = useGames();
@@ -29,12 +29,30 @@ export default function SettingsPage() {
 
   return (
     <div className="w-full max-w-xl mx-auto">
-      <PageHeader title="Configuración" description="Preferencias locales de la aplicación, guardadas en este dispositivo." />
+      <PageHeader
+        title="Configuracion"
+        description="En este apartado puedes configurar tus preferencias de visualización y comportamiento de la aplicación."
+        icon={
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14" className="size-12">
+            <path
+              fill="url(#a)"
+              fillRule="evenodd"
+              d="M6.591 0a1.51 1.51 0 0 0-1.399.951l0 .001-.377.95-1.16.667-1.016-.155a1.51 1.51 0 0 0-1.528.733l-.409.704A1.495 1.495 0 0 0 .83 5.538l.641.8v1.324l-.641.8a1.5 1.5 0 0 0-.128 1.687l.41.704a1.5 1.5 0 0 0 1.527.733l1.02-.154 1.155.663.376.953A1.5 1.5 0 0 0 6.588 14h.82a1.51 1.51 0 0 0 1.398-.952l.375-.953 1.156-.663 1.02.154a1.51 1.51 0 0 0 1.527-.733l.41-.704a1.49 1.49 0 0 0-.128-1.688l-.642-.799V6.338l.642-.8a1.5 1.5 0 0 0 .127-1.687l-.409-.704a1.5 1.5 0 0 0-1.528-.733l-1.016.154-1.159-.667-.377-.949A1.5 1.5 0 0 0 7.403 0l-.406 0zM5.285 5.287c.412-.413 1.003-.613 1.713-.613s1.3.2 1.713.613c.412.412.613 1.002.613 1.713 0 .71-.2 1.3-.613 1.713-.413.412-1.003.613-1.713.613s-1.3-.2-1.713-.613S4.672 7.71 4.672 7s.2-1.3.613-1.713"
+              clipRule="evenodd"
+            ></path>
+            <defs>
+              <linearGradient id="a" x1="2.624" x2="13.473" y1="2.692" y2="8.272" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#0b00f2"></stop>
+                <stop offset="1" stopColor="#e105b0"></stop>
+              </linearGradient>
+            </defs>
+          </svg>
+        }
+      />
 
       <div className="flex flex-col w-full gap-8">
         <section className="w-full">
-          <SectionHeader title="Visualización" />
-          <Card className="w-full p-8">
+          <Card className="w-full p-8 mt-8">
             <CardContent className="flex flex-col gap-5">
               <div className="flex flex-col gap-4 ">
                 <Label htmlFor="settings-date-format">Formato de fecha</Label>
