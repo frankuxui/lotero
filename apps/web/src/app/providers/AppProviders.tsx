@@ -7,7 +7,7 @@ const ReactQueryDevtools = import.meta.env.DEV ? lazy(() => import("@tanstack/re
 
 export function AppProviders({ children }: { children: ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <QueryClientProvider client={queryClient}>
         {children}
         {ReactQueryDevtools && (

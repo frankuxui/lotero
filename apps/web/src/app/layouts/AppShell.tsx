@@ -5,11 +5,8 @@ import { MobileBottomNavigation } from "@/app/layouts/MobileBottomNavigation";
 import { MobileTopBar } from "@/app/layouts/MobileTopBar";
 import { LoadingState } from "@/components/shared/LoadingState";
 import { Toaster } from "@/components/shared/Toaster";
-import { useApplyTheme } from "@/hooks/useApplyTheme";
 
 export function AppShell() {
-  useApplyTheme();
-
   return (
     <div className="flex min-h-dvh">
       <DesktopSidebar />

@@ -5,7 +5,17 @@ import { formatCombination } from "@/lib/formatters/number";
 import type { Draw } from "@/types/draw";
 import { cn } from "@/lib/utils";
 
-export function DrawActions({ draw, onDeleteRequest, className }: { draw: Draw; onDeleteRequest: () => void; className?: string }) {
+export function DrawActions({
+  draw,
+  onDeleteRequest,
+  isDeleting,
+  className
+}: {
+  draw: Draw;
+  onDeleteRequest: () => void;
+  isDeleting?: boolean;
+  className?: string;
+}) {
   const compareHref = `/compare?game=${encodeURIComponent(draw.game)}&numbers=${encodeURIComponent(formatCombination(draw.numbers))}`;
 
   return (
@@ -25,7 +35,7 @@ export function DrawActions({ draw, onDeleteRequest, className }: { draw: Draw; 
           <GitCompare className="size-4" />
         </Link>
       </Button>
-      <Button variant="ghost" size="icon" className="rounded-full" aria-label="Eliminar sorteo" onClick={onDeleteRequest}>
+      <Button variant="ghost" size="icon" className="rounded-full" aria-label="Eliminar sorteo" onClick={onDeleteRequest} disabled={isDeleting}>
         <Trash2 className="size-4" />
       </Button>
     </div>

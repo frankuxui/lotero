@@ -193,7 +193,13 @@ export default function BetsListPage() {
                       </TableCell>
                       <TableCell>{formatTimestamp(bet.createdAt)}</TableCell>
                       <TableCell className="text-right">
-                        <BetActions bet={bet} onDuplicate={() => handleDuplicate(bet)} onDeleteRequest={() => requestDelete(bet)} isDuplicating={duplicatingId === bet.id} />
+                        <BetActions
+                          bet={bet}
+                          onDuplicate={() => handleDuplicate(bet)}
+                          onDeleteRequest={() => requestDelete(bet)}
+                          isDuplicating={duplicatingId === bet.id}
+                          isDeleting={deleteMutation.isPending && deleteMutation.variables === bet.id}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -211,7 +217,15 @@ export default function BetsListPage() {
                 extrasConfig={findGameConfig(games, bet.game)?.extras}
                 to={`/bets/${bet.id}`}
                 compact
-                actions={<BetActions bet={bet} onDuplicate={() => handleDuplicate(bet)} onDeleteRequest={() => requestDelete(bet)} isDuplicating={duplicatingId === bet.id} />}
+                actions={
+                  <BetActions
+                    bet={bet}
+                    onDuplicate={() => handleDuplicate(bet)}
+                    onDeleteRequest={() => requestDelete(bet)}
+                    isDuplicating={duplicatingId === bet.id}
+                    isDeleting={deleteMutation.isPending && deleteMutation.variables === bet.id}
+                  />
+                }
               />
             ))}
           </div>
