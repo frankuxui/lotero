@@ -133,7 +133,13 @@ export default function DrawsListPage() {
         <>
           {!showCardsOnly && (
             <div className="hidden lg:block bg-background rounded-2xl overflow-hidden border border-border mt-8">
-              <DrawsTable draws={drawsQuery.data.items} games={games} dateFormat={dateFormat} onDeleteRequest={requestDelete} />
+              <DrawsTable
+                draws={drawsQuery.data.items}
+                games={games}
+                dateFormat={dateFormat}
+                onDeleteRequest={requestDelete}
+                deletingId={deleteMutation.isPending ? deleteMutation.variables : undefined}
+              />
             </div>
           )}
 
@@ -145,7 +151,9 @@ export default function DrawsListPage() {
                 gameLabel={gameLabel(games, draw.game)}
                 extrasConfig={findGameConfig(games, draw.game)?.extras}
                 to={`/draws/${draw.id}`}
-                actions={<DrawActions draw={draw} onDeleteRequest={() => requestDelete(draw)} />}
+                actions={
+                  <DrawActions draw={draw} onDeleteRequest={() => requestDelete(draw)} isDeleting={deleteMutation.isPending && deleteMutation.variables === draw.id} />
+                }
               />
             ))}
           </div>

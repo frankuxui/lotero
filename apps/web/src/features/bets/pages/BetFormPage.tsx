@@ -102,7 +102,11 @@ export default function BetFormPage() {
       navigate(`/bets/${bet.id}`);
     };
     const onError = (error: unknown) => {
-      if (error instanceof ApiError) setSubmitError(error);
+      if (error instanceof ApiError) {
+        setSubmitError(error);
+      } else {
+        toast({ title: "No se pudo guardar la apuesta. Revisa tu conexión e inténtalo de nuevo.", variant: "error" });
+      }
     };
 
     if (isEdit && id) {

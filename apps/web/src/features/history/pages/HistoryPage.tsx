@@ -75,7 +75,7 @@ export default function HistoryPage() {
         list.push({ kind: "bet", date: bet.createdAt, bet });
       }
     }
-    return list.sort((a, b) => (a.date < b.date ? 1 : -1));
+    return list.sort((a, b) => (a.date > b.date ? -1 : a.date < b.date ? 1 : 0));
   }, [type, drawsQuery.data, betsQuery.data, hasValidNumberFilter, parsedNumber]);
 
   const canLoadMore = (type !== "bets" && (drawsQuery.data?.meta.total ?? 0) > batchSize) || (type !== "draws" && (betsQuery.data?.meta.total ?? 0) > batchSize);

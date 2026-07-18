@@ -64,7 +64,7 @@ Al cambiar de juego se remonta el formulario mediante `key={config.id}`. En edic
 - `components/ui`: Button, Input, Select, Dialog, Sheet, Table, Tabs, etc.; primitivas estilo shadcn construidas sobre Radix cuando aplica.
 - `components/shared`: cabeceras, estados, filtros, paginación, badges, tablas y selector numérico.
 - Tailwind CSS 4 y tokens CSS en `App.css`.
-- Tema claro/oscuro mediante `next-themes` y una preferencia Zustand aplicada por `useApplyTheme`.
+- Tema claro/oscuro gestionado íntegramente por `next-themes` (`useTheme`), única fuente de verdad para `ThemeToggle`, el selector "Tema" de `SettingsPage` y `Toaster`.
 - Navegación responsive: sidebar de escritorio, top bar y bottom navigation móviles.
 
 Mantén las variantes visuales en primitivas o componentes compartidos. Los componentes de dominio deben vivir en el feature que posee el concepto.

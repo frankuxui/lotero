@@ -90,7 +90,11 @@ export default function DrawFormPage() {
       setResetKey((key) => key + 1);
     };
     const onError = (error: unknown) => {
-      if (error instanceof ApiError) setSubmitError(error);
+      if (error instanceof ApiError) {
+        setSubmitError(error);
+      } else {
+        toast({ title: "No se pudo guardar el sorteo. Revisa tu conexión e inténtalo de nuevo.", variant: "error" });
+      }
     };
 
     if (isEdit && id) {

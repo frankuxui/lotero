@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTheme } from "next-themes";
 import { GameSelector } from "@/components/shared/GameSelector";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,15 +18,18 @@ export default function SettingsPage() {
   const itemsPerPage = useSettingsStore((state) => state.itemsPerPage);
   const defaultGame = useSettingsStore((state) => state.defaultGame);
   const viewMode = useSettingsStore((state) => state.viewMode);
-  const theme = useSettingsStore((state) => state.theme);
   const confirmBeforeDelete = useSettingsStore((state) => state.confirmBeforeDelete);
 
   const setDateFormat = useSettingsStore((state) => state.setDateFormat);
   const setItemsPerPage = useSettingsStore((state) => state.setItemsPerPage);
   const setDefaultGame = useSettingsStore((state) => state.setDefaultGame);
   const setViewMode = useSettingsStore((state) => state.setViewMode);
-  const setTheme = useSettingsStore((state) => state.setTheme);
   const setConfirmBeforeDelete = useSettingsStore((state) => state.setConfirmBeforeDelete);
+
+  // Misma fuente que ThemeToggle/Toaster (next-themes): evita dos sistemas de tema
+  // desincronizados escribiendo la clase `dark` del documento por separado.
+  const { theme, setTheme } = useTheme();
+  const currentTheme = (theme as "system" | "light" | "dark" | undefined) ?? "system";
 
   return (
     <div className="w-full max-w-xl mx-auto">
@@ -84,7 +88,7 @@ export default function SettingsPage() {
 
               <div className="flex flex-col gap-4 ">
                 <Label htmlFor="settings-theme">Tema</Label>
-                <Select id="settings-theme" value={theme} onChange={(event) => setTheme(event.target.value as "system" | "light" | "dark")}>
+                <Select id="settings-theme" value={currentTheme} onChange={(event) => setTheme(event.target.value)}>
                   <option value="system">Automático (según el sistema)</option>
                   <option value="light">Claro</option>
                   <option value="dark">Oscuro</option>

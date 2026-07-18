@@ -3,7 +3,19 @@ import { Link } from "react-router-dom";
 import { formatCombination } from "@/lib/formatters/number";
 import type { Bet } from "@/types/bet";
 
-export function BetActions({ bet, onDuplicate, onDeleteRequest, isDuplicating }: { bet: Bet; onDuplicate: () => void; onDeleteRequest: () => void; isDuplicating?: boolean }) {
+export function BetActions({
+  bet,
+  onDuplicate,
+  onDeleteRequest,
+  isDuplicating,
+  isDeleting
+}: {
+  bet: Bet;
+  onDuplicate: () => void;
+  onDeleteRequest: () => void;
+  isDuplicating?: boolean;
+  isDeleting?: boolean;
+}) {
   const firstLine = bet.lines[0];
   const compareHref = firstLine ? `/compare?game=${encodeURIComponent(bet.game)}&numbers=${encodeURIComponent(formatCombination(firstLine.numbers))}` : undefined;
 
@@ -32,6 +44,7 @@ export function BetActions({ bet, onDuplicate, onDeleteRequest, isDuplicating }:
       <button
         aria-label="Eliminar apuesta"
         onClick={onDeleteRequest}
+        disabled={isDeleting}
         className="inline-flex items-center justify-center rounded-full size-10 transition-all duration-300 flex-none hover:bg-foreground/5"
       >
         <Trash2 className="size-5" />

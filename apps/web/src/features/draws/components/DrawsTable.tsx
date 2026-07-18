@@ -36,7 +36,19 @@ function matchesNumberQuery(numbers: number[], query: string): boolean {
   return numbers.some((n) => formatLotteryNumber(n).includes(needle) || String(n) === needle);
 }
 
-export function DrawsTable({ draws, games, dateFormat, onDeleteRequest }: { draws: Draw[]; games: GameConfig[]; dateFormat: DateFormatPreference; onDeleteRequest: (draw: Draw) => void }) {
+export function DrawsTable({
+  draws,
+  games,
+  dateFormat,
+  onDeleteRequest,
+  deletingId
+}: {
+  draws: Draw[];
+  games: GameConfig[];
+  dateFormat: DateFormatPreference;
+  onDeleteRequest: (draw: Draw) => void;
+  deletingId?: string;
+}) {
   "use no memo";
 
   const [sorting, setSorting] = useState<SortingState>([{ id: "drawDate", desc: true }]);
@@ -82,10 +94,17 @@ export function DrawsTable({ draws, games, dateFormat, onDeleteRequest }: { draw
         id: "actions",
         header: "Acciones",
         enableSorting: false,
-        cell: (info) => <DrawActions draw={info.row.original} onDeleteRequest={() => onDeleteRequest(info.row.original)} className="text-right flex items-center justify-end" />
+        cell: (info) => (
+          <DrawActions
+            draw={info.row.original}
+            onDeleteRequest={() => onDeleteRequest(info.row.original)}
+            isDeleting={deletingId === info.row.original.id}
+            className="text-right flex items-center justify-end"
+          />
+        )
       })
     ],
-    [games, dateFormat, onDeleteRequest]
+    [games, dateFormat, onDeleteRequest, deletingId]
   );
 
   // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Table expone funciones no memoizables; este componente está marcado con "use no memo".
