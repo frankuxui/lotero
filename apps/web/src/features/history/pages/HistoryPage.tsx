@@ -9,11 +9,7 @@ import { NumberBadge } from "@/components/shared/NumberBadge";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { RecordTable, type RecordTableColumn } from "@/components/shared/RecordTable";
 import { SkeletonCard } from "@/components/shared/SkeletonCard";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
+import { Button, buttonVariants, Badge, Input, Select, Label } from "@/components/ui";
 import { BetCard } from "@/features/bets/components/BetCard";
 import { useBetsList } from "@/features/bets/hooks/useBetsList";
 import { DrawCard } from "@/features/draws/components/DrawCard";
@@ -115,43 +111,69 @@ export default function HistoryPage() {
       header: "",
       className: "text-right",
       cell: (entry) => (
-        <Button asChild variant="ghost" size="sm">
-          <Link to={entry.kind === "draw" ? `/draws/${entry.draw.id}` : `/bets/${entry.bet.id}`}>Ver</Link>
-        </Button>
+        <Link to={entry.kind === "draw" ? `/draws/${entry.draw.id}` : `/bets/${entry.bet.id}`} className={buttonVariants({ variant: "inverse", size: "sm" })}>
+          Ver
+        </Link>
       )
     }
   ];
 
   return (
-    <>
-      <PageHeader title="Historial" description="Historial unificado de sorteos y apuestas." />
+    <div className="w-full max-w-4xl mx-auto">
+      <PageHeader
+        title="Historial"
+        description="Historial unificado de sorteos y apuestas."
+        icon={
+          <svg xmlns="http://www.w3.org/2000/svg" className="size-14" viewBox="0 0 16 16">
+            <g fill="none">
+              <path fill="url(#SVGX47HbbxR)" d="M7.698 5a.75.75 0 0 1 .75.75V7.5h1.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1-.75-.75v-2.5a.75.75 0 0 1 .75-.75" />
+              <path
+                fill="url(#fref78)"
+                d="M7.947 3.5a4.5 4.5 0 1 1-4.454 5.14a.75.75 0 1 0-1.485.212a6.001 6.001 0 1 0 1.94-5.324V2.75a.75.75 0 1 0-1.5 0v3c0 .414.335.75.75.75h2.5a.75.75 0 1 0 0-1.5H4.592a4.5 4.5 0 0 1 3.354-1.5"
+              />
+              <defs>
+                <linearGradient id="SVGX47HbbxR" x1="6.357" x2="14.586" y1="12.633" y2="8.988" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#d373fc" />
+                  <stop offset="1" stopColor="#6d37cd" />
+                </linearGradient>
+                <linearGradient id="fref78" x1="2" x2="5.234" y1="2.706" y2="16.186" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#0fafff" />
+                  <stop offset="1" stopColor="#0067bf" />
+                </linearGradient>
+              </defs>
+            </g>
+          </svg>
+        }
+      />
 
-      <FilterBar>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="history-type">Tipo</Label>
-          <Select id="history-type" value={type} onChange={(event) => setParam("type", event.target.value)}>
-            <option value="all">Todos</option>
-            <option value="draws">Sorteos</option>
-            <option value="bets">Apuestas</option>
-          </Select>
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="history-game">Juego</Label>
-          <GameSelector id="history-game" games={games} value={game} onChange={(value) => setParam("game", value)} allowAll />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="history-from">Desde</Label>
-          <Input id="history-from" type="date" value={dateFrom} max={dateTo || undefined} onChange={(event) => setParam("dateFrom", event.target.value)} />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="history-to">Hasta</Label>
-          <Input id="history-to" type="date" value={dateTo} min={dateFrom || undefined} onChange={(event) => setParam("dateTo", event.target.value)} />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="history-number">Número (en lo cargado)</Label>
-          <Input id="history-number" type="number" min={1} value={numberFilter} onChange={(event) => setParam("number", event.target.value)} placeholder="Ej. 23" className="w-32" />
-        </div>
-      </FilterBar>
+      <div className="mt-8 w-full">
+        <FilterBar>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="history-type">Tipo</Label>
+            <Select id="history-type" value={type} onChange={(event) => setParam("type", event.target.value)}>
+              <option value="all">Todos</option>
+              <option value="draws">Sorteos</option>
+              <option value="bets">Apuestas</option>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="history-game">Juego</Label>
+            <GameSelector id="history-game" games={games} value={game} onChange={(value) => setParam("game", value)} allowAll />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="history-from">Desde</Label>
+            <Input id="history-from" type="date" value={dateFrom} max={dateTo || undefined} onChange={(event) => setParam("dateFrom", event.target.value)} />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="history-to">Hasta</Label>
+            <Input id="history-to" type="date" value={dateTo} min={dateFrom || undefined} onChange={(event) => setParam("dateTo", event.target.value)} />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="history-number">Número (en lo cargado)</Label>
+            <Input id="history-number" type="number" min={1} value={numberFilter} onChange={(event) => setParam("number", event.target.value)} placeholder="Ej. 23" className="w-32" />
+          </div>
+        </FilterBar>
+      </div>
 
       <p className="mb-4 text-xs text-slate-500 dark:text-slate-400">
         El filtro por número solo busca dentro de los registros ya cargados. Para una búsqueda exhaustiva usa el{" "}
@@ -177,7 +199,7 @@ export default function HistoryPage() {
 
       {!isPending && !isError && entries.length > 0 && (
         <>
-          <div className="hidden md:block">
+          <div className="hidden md:block bg-card rounded-2xl overflow-hidden">
             <RecordTable rows={entries} columns={columns} getRowKey={(entry) => `${entry.kind}-${entry.kind === "draw" ? entry.draw.id : entry.bet.id}`} />
           </div>
 
@@ -200,6 +222,6 @@ export default function HistoryPage() {
           )}
         </>
       )}
-    </>
+    </div>
   );
 }

@@ -57,9 +57,22 @@ No edites manualmente archivos de `migrations/meta` ni una migración ya aplicad
 
 ## Despliegue
 
-La API se ejecuta en Docker para permanecer visible en la red local (móvil, portátiles); el frontend sigue en modo desarrollo (`npm run dev:web`) y no se dockeriza.
+La API y el frontend pueden ejecutarse en Docker para permanecer visibles en la red local (móvil, portátiles).
 
-`apps/api/Dockerfile` compila el workspace `@lotero/api` en dos etapas y `docker-compose.yml` (raíz) lo ejecuta con contexto en la raíz del monorepo. El contenedor requiere `apps/api/.env` (mismo archivo que usas en desarrollo); `docker-compose.yml` fija `HOST`, `PORT`, `NODE_ENV` y `DATABASE_URL`, y toma el resto (`CORS_ORIGIN`, `LOG_LEVEL`) de ese `.env`. El build copia `apps/api` desde tu working tree, no desde Git: los cambios sin commitear también entran en la imagen.
+`apps/api/Dockerfile` compila el workspace `@lotero/api` en dos etapas y `apps/web/Dockerfile` construye la SPA (`vite build`) para servirla con Nginx. `docker-compose.yml` (raíz) ejecuta ambos con contexto en la raíz del monorepo. El contenedor API requiere `apps/api/.env` (mismo archivo que usas en desarrollo); `docker-compose.yml` fija `HOST`, `PORT`, `NODE_ENV` y `DATABASE_URL`, y toma el resto (`CORS_ORIGIN`, `LOG_LEVEL`) de ese `.env`. El build copia `apps/api` y `apps/web` desde tu working tree, no desde Git: los cambios sin commitear también entran en la imagen.
+
+Comandos rápidos del stack completo:
+
+```bash
+docker compose build api web
+docker compose up -d --build --force-recreate api web
+docker compose stop api web
+docker compose start api web
+docker compose down
+docker compose logs -f api web
+```
+
+`VITE_API_URL` se inyecta en el build del frontend Docker (build arg). Si necesitas acceso desde otros dispositivos, define antes del build una URL con IP LAN, por ejemplo `http://192.168.1.50:4031/api`.
 
 ### Cada vez que cambies código de `apps/api`
 

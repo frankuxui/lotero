@@ -9,5 +9,3 @@ apps/api/data
 .claude
 docs
 scripts
-apps/web/*
-!apps/web/package.json

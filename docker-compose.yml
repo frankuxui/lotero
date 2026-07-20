@@ -15,3 +15,15 @@ services:
     volumes:
       - ./apps/api/data:/app/apps/api/data
     restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:4031/api}
+    depends_on:
+      - api
+    ports:
+      - "${WEB_PORT:-5173}:80"
+    restart: unless-stopped

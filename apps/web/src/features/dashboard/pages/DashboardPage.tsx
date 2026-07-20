@@ -75,7 +75,7 @@ export default function DashboardPage() {
                 </Link>
               }
             />
-            {suggestionsQuery.isPending && <SkeletonCard count={2} />}
+            {suggestionsQuery.isPending && <SkeletonCard count={2} className="mt-6" />}
             {suggestionsQuery.isError && !suggestionsQuery.isPending && <ErrorState message="No se pudo cargar la sugerencia del día." onRetry={() => void suggestionsQuery.refetch()} />}
             {suggestionsQuery.data && suggestionsQuery.data.length === 0 && (
               <EmptyState title="Todavía no hay sugerencia" description="Se genera automáticamente en cuanto haya sorteos registrados." />
