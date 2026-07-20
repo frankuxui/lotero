@@ -5,11 +5,6 @@ services:
       dockerfile: apps/api/Dockerfile
     env_file:
       - apps/api/.env
-    environment:
-      NODE_ENV: production
-      HOST: 0.0.0.0
-      PORT: 4031
-      DATABASE_URL: file:./data/lotero.db
     ports:
       - "${API_PORT:-4031}:4031"
     volumes:
@@ -21,7 +16,7 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
       args:
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:4031/api}
+        VITE_API_URL: "${VITE_API_URL}"
     depends_on:
       - api
     ports:
