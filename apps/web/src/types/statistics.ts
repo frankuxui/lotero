@@ -44,6 +44,20 @@ export interface ExtraFrequency {
   top: ExtraValueFrequency[];
 }
 
+export interface ClosestBetMatch {
+  betId: string;
+  betLabel: string | null;
+  lineId: string;
+  numbers: number[];
+  playedAt: string;
+  drawId: string;
+  drawDate: string;
+  drawNumbers: number[];
+  matches: number[];
+  totalMatches: number;
+  percentage: number;
+}
+
 export interface StatisticsResponse {
   game: string;
   totalDraws: number;
@@ -59,4 +73,5 @@ export interface StatisticsResponse {
   topTrios: NumberTrio[];
   consecutive: { drawsWithConsecutive: number; percentage: number };
   extraFrequencies: ExtraFrequency[];
+  closestBetMatches: ClosestBetMatch[];
 }

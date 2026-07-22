@@ -58,6 +58,8 @@ El repositorio entrega sorteos por fecha descendente; `computeStatistics` depend
 
 Con cero sorteos se devuelven frecuencias/retrasos para todo el rango, porcentajes y promedio en cero, y fechas nulas. `extraFrequencies` devuelve un `top` vacío por extra.
 
+`closestBetMatches` responde a "qué tan cerca quedó cada combinación jugada del sorteo para el que se jugó". No existe un vínculo explícito entre una apuesta y un sorteo concreto, así que para cada apuesta del juego filtrado se resuelve el sorteo con la fecha más próxima (antes o después, sin asumir orden) y se mide el acierto de cada línea contra ese sorteo concreto — no contra el mejor sorteo histórico, que ya cubre `POST /api/comparison`. Se devuelven como máximo diez resultados, ordenados por aciertos y porcentaje descendentes. Con cero sorteos en el juego, la lista queda vacía.
+
 ## Buscador de números
 
 Sin juego explícito se elige el primer juego registrado cuyo rango contiene el número. Apariciones totales suman sorteos y líneas de apuesta de todos los juegos compatibles. Frecuencia, retraso, ranking y última aparición se calculan para el juego resuelto. Se devuelven como máximo diez sorteos y diez líneas relacionadas.
@@ -65,6 +67,8 @@ Sin juego explícito se elige el primer juego registrado cuyo rango contiene el 
 ## Dashboard
 
 Muestra cinco sorteos y apuestas recientes, conteos por juego, cinco calientes/fríos por juego y cinco mejores coincidencias. Para cada línea reciente busca su mejor sorteo y descarta resultados con cero aciertos. También muestra la "Sugerencia del día" (una combinación por juego registrado) con enlace al histórico.
+
+Además, `mostPlayedByGame` calcula, por cada juego con apuestas registradas, los cinco números con más apariciones dentro de las líneas de apuesta del usuario (no de los sorteos oficiales); empates se ordenan por número ascendente y el porcentaje se calcula sobre el total de líneas del juego.
 
 ## Sugerencia del día
 

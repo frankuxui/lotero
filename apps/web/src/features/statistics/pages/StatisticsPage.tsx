@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { FilterBar } from "@/components/shared/FilterBar";
@@ -17,7 +17,7 @@ import { StatBar } from "@/features/statistics/components/StatBar";
 import { StatisticCard } from "@/features/statistics/components/StatisticCard";
 import { useStatistics } from "@/features/statistics/hooks/useStatistics";
 import { useGames } from "@/hooks/useGames";
-import { formatPlainDate } from "@/lib/formatters/date";
+import { formatDateLong, formatPlainDate } from "@/lib/formatters/date";
 import { findGameConfig } from "@/lib/games";
 import { useSettingsStore } from "@/store/settingsStore";
 import { CalendarDays } from "lucide-react";
@@ -274,6 +274,46 @@ export default function StatisticsPage() {
                 </CardContent>
               </Card>
             </div>
+          </section>
+
+          <section className="mt-8">
+            <SectionHeader
+              title="Tus combinaciones más cercanas a su sorteo"
+              description="Números completos que jugaste y su acierto frente al sorteo más próximo en fecha para el que se jugaron."
+            />
+            {data.closestBetMatches.length === 0 ? (
+              <EmptyState title="Sin apuestas para comparar" description="Registra apuestas de este juego para ver aquí tus combinaciones más cercanas." />
+            ) : (
+              <div className="grid gap-3 sm:grid-cols-2 mt-8">
+                {data.closestBetMatches.map((match) => {
+                  const matchSet = new Set(match.matches);
+                  return (
+                    <Link key={`${match.betId}-${match.lineId}`} to={`/bets/${match.betId}`} className="block rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600">
+                      <Card>
+                        <CardContent className="w-full">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-xs text-slate-500 dark:text-slate-400">
+                              {match.betLabel || "Apuesta sin nombre"} · {formatDateLong(match.playedAt, dateFormat)}
+                            </span>
+                            <span className="rounded-full bg-foreground/10 px-2.5 py-0.5 text-xs font-semibold">
+                              {match.totalMatches}/{match.numbers.length}
+                            </span>
+                          </div>
+                          <div className="mt-3 flex flex-wrap gap-1.5">
+                            {match.numbers.map((n) => (
+                              <NumberBadge key={n} value={n} variant={matchSet.has(n) ? "match" : "muted"} size="sm" />
+                            ))}
+                          </div>
+                          <p className="mt-2 text-xs text-foreground/80">
+                            {match.percentage}% de aciertos frente al sorteo del {formatPlainDate(match.drawDate, dateFormat)}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </section>
         </div>
       )}
