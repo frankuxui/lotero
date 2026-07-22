@@ -31,3 +31,5 @@ npm run build
 ```
 
 No hay suite automatizada de tests en el estado actual; no afirmes que se ejecutaron tests si no existe un comando real.
+
+## Imported Claude Cowork project instructions
