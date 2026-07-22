@@ -12,6 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { BetLineCard } from "@/features/bets/components/BetLineCard";
 import { useBet } from "@/features/bets/hooks/useBet";
 import { useDeleteBet } from "@/features/bets/hooks/useBetMutations";
+import { useNumberPlayCounts } from "@/features/numbers/hooks/useNumberPlayCounts";
 import { useGames } from "@/hooks/useGames";
 import { formatCombination } from "@/lib/formatters/number";
 import { formatTimestamp } from "@/lib/formatters/date";
@@ -34,6 +35,8 @@ export default function BetDetailPage() {
   const isPending = betQuery.isPending || gamesQuery.isPending;
   const isError = betQuery.isError || gamesQuery.isError;
   const bet = betQuery.data;
+  const allNumbers = useMemo(() => bet?.lines.flatMap((line) => line.numbers) ?? [], [bet]);
+  const playCounts = useNumberPlayCounts(allNumbers, bet?.game);
 
   const breadcrumbs = [{ label: "Mis apuestas", to: "/bets" }, { label: betQuery.data?.label || "Detalle" }];
 
@@ -136,7 +139,7 @@ export default function BetDetailPage() {
                   Comparar
                 </Link>
               </div>
-              <BetLineCard line={line} extrasConfig={config?.extras} />
+              <BetLineCard line={line} extrasConfig={config?.extras} playCounts={playCounts} />
             </CardContent>
           </Card>
         ))}

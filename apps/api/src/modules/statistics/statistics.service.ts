@@ -1,9 +1,13 @@
 import { requireGameConfig, type GameConfig } from "../../config/game-config.js";
+import type { Bet } from "../bets/bet.types.js";
+import type { BetRepository } from "../bets/bet.repository.js";
 import type { Draw } from "../draws/draw.types.js";
 import type { DrawRepository } from "../draws/draw.repository.js";
 import { parseStatisticsQuery } from "./statistics.schemas.js";
 import type {
+  ClosestBetMatch,
   DecadeBucket,
+  DrawStatistics,
   ExtraFrequency,
   NumberDelay,
   NumberFrequency,
@@ -13,6 +17,7 @@ import type {
 } from "./statistics.types.js";
 
 const TOP_LIST_SIZE = 10;
+const CLOSEST_MATCH_LIMIT = 10;
 
 function combinations<T>(items: T[], size: number): T[][] {
   if (size === 0) return [[]];
@@ -25,7 +30,7 @@ function combinations<T>(items: T[], size: number): T[][] {
 }
 
 /** Motor puro de cálculo: reutilizable por el dashboard (calientes/fríos) sin duplicar lógica. */
-export function computeStatistics(config: GameConfig, draws: Draw[]): StatisticsResponse {
+export function computeStatistics(config: GameConfig, draws: Draw[]): DrawStatistics {
   const { min, max } = config.numbers;
   const totalDraws = draws.length;
   // draws viene ordenado DESC por fecha (más reciente primero), garantizado por DrawRepository.listAllMatching.
@@ -155,12 +160,73 @@ export function computeStatistics(config: GameConfig, draws: Draw[]): Statistics
 }
 
 export class StatisticsService {
-  constructor(private readonly drawRepository: DrawRepository) {}
+  constructor(
+    private readonly drawRepository: DrawRepository,
+    private readonly betRepository: BetRepository,
+  ) {}
 
   async getStatistics(input: unknown): Promise<StatisticsResponse> {
     const query = parseStatisticsQuery(input);
     const config = requireGameConfig(query.game);
     const draws = await this.drawRepository.listAllMatching(query);
-    return computeStatistics(config, draws);
+    const stats = computeStatistics(config, draws);
+
+    const bets = await this.betRepository.listAllMatching({ game: query.game });
+    const closestBetMatches = this.computeClosestBetMatches(bets, draws);
+
+    return { ...stats, closestBetMatches };
+  }
+
+  /**
+   * Para cada línea de apuesta busca el sorteo del mismo juego más cercano en fecha (antes o
+   * después, sin asumir orden) y mide su acierto contra ese sorteo concreto: representa "el
+   * sorteo para el que se jugó", no el mejor acierto histórico (eso ya lo cubre /api/comparison).
+   */
+  private computeClosestBetMatches(bets: Bet[], draws: Draw[]): ClosestBetMatch[] {
+    if (draws.length === 0) return [];
+
+    const results: ClosestBetMatch[] = [];
+    for (const bet of bets) {
+      const nearestDraw = this.findNearestDraw(bet.createdAt, draws);
+      if (!nearestDraw) continue;
+
+      const matchSet = new Set(nearestDraw.numbers);
+      for (const line of bet.lines) {
+        const matches = line.numbers.filter((n) => matchSet.has(n)).sort((a, b) => a - b);
+        results.push({
+          betId: bet.id,
+          betLabel: bet.label ?? null,
+          lineId: line.id,
+          numbers: line.numbers,
+          playedAt: bet.createdAt,
+          drawId: nearestDraw.id,
+          drawDate: nearestDraw.drawDate,
+          drawNumbers: nearestDraw.numbers,
+          matches,
+          totalMatches: matches.length,
+          percentage: Math.round((matches.length / line.numbers.length) * 1000) / 10,
+        });
+      }
+    }
+
+    return results
+      .sort((a, b) => b.totalMatches - a.totalMatches || b.percentage - a.percentage)
+      .slice(0, CLOSEST_MATCH_LIMIT);
+  }
+
+  private findNearestDraw(betCreatedAt: string, draws: Draw[]): Draw | undefined {
+    const betTime = new Date(betCreatedAt.slice(0, 10)).getTime();
+    let nearest: Draw | undefined;
+    let smallestDiff = Infinity;
+
+    for (const draw of draws) {
+      const diff = Math.abs(new Date(draw.drawDate).getTime() - betTime);
+      if (diff < smallestDiff) {
+        smallestDiff = diff;
+        nearest = draw;
+      }
+    }
+
+    return nearest;
   }
 }

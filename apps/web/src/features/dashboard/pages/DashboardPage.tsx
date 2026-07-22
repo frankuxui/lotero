@@ -213,6 +213,31 @@ export default function DashboardPage() {
               </div>
             )}
           </section>
+
+          <section>
+            <SectionHeader title="Números más jugados" description="Los números que más veces has incluido en tus apuestas de La Primitiva y Bonoloto." />
+            {dashboardQuery.data.mostPlayedByGame.length === 0 ? (
+              <EmptyState title="Aún no hay apuestas registradas" />
+            ) : (
+              <div className="grid gap-3 sm:grid-cols-2 mt-8">
+                {dashboardQuery.data.mostPlayedByGame.map((entry) => (
+                  <Card key={entry.game}>
+                    <CardContent className="w-full">
+                      <GameBadge game={entry.game} label={gameLabel(games, entry.game)} />
+                      <div className="flex flex-col gap-1.5 mt-3">
+                        {entry.numbers.map((item) => (
+                          <div key={item.number} className="flex items-center justify-between">
+                            <NumberBadge value={item.number} size="sm" />
+                            <span className="text-sm text-slate-500 dark:text-slate-400">{item.count} veces</span>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </section>
         </div>
       )}
     </div>

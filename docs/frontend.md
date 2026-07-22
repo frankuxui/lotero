@@ -16,15 +16,15 @@
 | `/` | `DashboardPage` | Resumen agregado |
 | `/bets` | `BetsListPage` | Lista, filtros, duplicación y borrado |
 | `/bets/new` | `BetFormPage` | Nueva apuesta |
-| `/bets/:id` | `BetDetailPage` | Detalle de apuesta |
+| `/bets/:id` | `BetDetailPage` | Detalle de apuesta; muestra por cada número cuántas veces se ha jugado (reutiliza `GET /api/numbers/:number`) |
 | `/bets/:id/edit` | `BetFormPage` | Edición |
-| `/draws` | `DrawsListPage` | Lista, filtros y borrado |
+| `/draws` | `DrawsListPage` | Lista, filtros, borrado y buscador global (número suelto o combinación completa concatenada, p.ej. "253343") en la tabla de escritorio |
 | `/draws/new` | `DrawFormPage` | Nuevo sorteo |
 | `/draws/:id` | `DrawDetailPage` | Detalle de sorteo |
 | `/draws/:id/edit` | `DrawFormPage` | Edición |
 | `/history` | `HistoryPage` | Historial combinado |
 | `/compare` | `ComparePage` | Comparador |
-| `/statistics` | `StatisticsPage` | Métricas por juego y fecha |
+| `/statistics` | `StatisticsPage` | Métricas por juego y fecha; incluye combinaciones jugadas más cercanas a su sorteo (`closestBetMatches`) |
 | `/suggestions` | `SuggestionsHistoryPage` | Histórico de sugerencias con filtros y acierto/desacierto |
 | `/numbers` | `NumbersPage` | Selector de número |
 | `/numbers/:number` | `NumberDetailPage` | Apariciones y estadísticas |

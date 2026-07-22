@@ -33,7 +33,13 @@ const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
 function matchesNumberQuery(numbers: number[], query: string): boolean {
   const needle = query.trim().toLowerCase();
   if (!needle) return true;
-  return numbers.some((n) => formatLotteryNumber(n).includes(needle) || String(n) === needle);
+  if (numbers.some((n) => formatLotteryNumber(n).includes(needle) || String(n) === needle)) return true;
+
+  // Permite buscar la combinación completa concatenada (p.ej. "253343" para 25, 33 y 43),
+  // no solo números sueltos; el orden de `numbers` ya viene normalizado por GameConfig.
+  if (!/^\d+$/.test(needle)) return false;
+  const combined = numbers.map(formatLotteryNumber).join("");
+  return combined.includes(needle);
 }
 
 export function DrawsTable({
@@ -135,7 +141,7 @@ export function DrawsTable({
           <Input
             value={globalFilter}
             onChange={(event) => setGlobalFilter(event.target.value)}
-            placeholder="Buscar número, juego o fecha…"
+            placeholder="Buscar número, combinación (253343), juego o fecha…"
             className="w-full pl-9"
             aria-label="Buscador global de sorteos"
           />

@@ -1,13 +1,16 @@
 import { listGameConfigs } from "../../config/game-config.js";
+import type { Bet } from "../bets/bet.types.js";
 import type { BetRepository } from "../bets/bet.repository.js";
 import type { ComparisonService } from "../comparison/comparison.service.js";
 import type { DrawRepository } from "../draws/draw.repository.js";
 import { computeStatistics } from "../statistics/statistics.service.js";
-import type { DashboardGameCount, DashboardGameNumbers, DashboardMatch, DashboardResponse } from "./dashboard.types.js";
+import type { NumberFrequency } from "../statistics/statistics.types.js";
+import type { DashboardGameCount, DashboardGameMostPlayed, DashboardGameNumbers, DashboardMatch, DashboardResponse } from "./dashboard.types.js";
 
 const RECENT_LIMIT = 5;
 const MATCH_LIMIT = 5;
 const HOT_COLD_LIMIT = 5;
+const MOST_PLAYED_LIMIT = 5;
 
 export class DashboardService {
   constructor(
@@ -28,6 +31,7 @@ export class DashboardService {
 
     const byGame: DashboardGameCount[] = [];
     const numbersByGame: DashboardGameNumbers[] = [];
+    const mostPlayedByGame: DashboardGameMostPlayed[] = [];
 
     for (const config of games) {
       const [gameDraws, gameBets] = await Promise.all([
@@ -45,6 +49,11 @@ export class DashboardService {
           cold: stats.cold.slice(0, HOT_COLD_LIMIT),
         });
       }
+
+      if (gameBets > 0) {
+        const bets = await this.betRepository.listAllMatching({ game: config.id });
+        mostPlayedByGame.push({ game: config.id, numbers: this.computeMostPlayedNumbers(bets) });
+      }
     }
 
     const recentMatches = await this.computeRecentMatches(recentBets);
@@ -55,7 +64,32 @@ export class DashboardService {
       recentBets,
       recentMatches,
       numbersByGame,
+      mostPlayedByGame,
     };
+  }
+
+  /** Frecuencia de números dentro de las líneas de apuesta de un juego (no de los sorteos). */
+  private computeMostPlayedNumbers(bets: Bet[]): NumberFrequency[] {
+    const counts = new Map<number, number>();
+    let totalLines = 0;
+
+    for (const bet of bets) {
+      for (const line of bet.lines) {
+        totalLines += 1;
+        for (const number of line.numbers) {
+          counts.set(number, (counts.get(number) ?? 0) + 1);
+        }
+      }
+    }
+
+    return Array.from(counts.entries())
+      .map(([number, count]) => ({
+        number,
+        count,
+        percentage: totalLines > 0 ? Math.round((count / totalLines) * 1000) / 10 : 0,
+      }))
+      .sort((a, b) => b.count - a.count || a.number - b.number)
+      .slice(0, MOST_PLAYED_LIMIT);
   }
 
   private async computeRecentMatches(

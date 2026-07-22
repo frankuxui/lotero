@@ -15,6 +15,11 @@ export interface DashboardGameNumbers {
   cold: NumberFrequency[];
 }
 
+export interface DashboardGameMostPlayed {
+  game: string;
+  numbers: NumberFrequency[];
+}
+
 export interface DashboardMatch extends ComparisonResult {
   betId: string;
   betLabel: string | null;
@@ -30,4 +35,5 @@ export interface DashboardResponse {
   recentBets: Bet[];
   recentMatches: DashboardMatch[];
   numbersByGame: DashboardGameNumbers[];
+  mostPlayedByGame: DashboardGameMostPlayed[];
 }
