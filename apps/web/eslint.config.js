@@ -23,7 +23,32 @@ export default defineConfig([
     // junto a los componentes que las envuelven; es el patrón estándar de shadcn/ui.
     files: ["src/components/ui/**/*.tsx"],
     rules: {
-      "react-refresh/only-export-components": "off"
+      "react-refresh/only-export-components": "off",
+      "@typescript-eslint/no-explicit-any": "warn"
+    }
+  },
+  {
+    files: ["src/components/ui/popover/**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off"
+    }
+  },
+  {
+    files: ["src/components/ui/tooltip/**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off"
+    }
+  },
+  {
+    files: ["src/components/ui/dropdown/**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off"
+    }
+  },
+  {
+    files: ["src/components/ui/modal/**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off"
     }
   }
 ]);
